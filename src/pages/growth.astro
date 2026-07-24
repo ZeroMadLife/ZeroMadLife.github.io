@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const events = [
+  ['2026.07.24', '公开 HR Agent 第一阶段上线', '身份、项目、架构、职责、安全、测试、部署和路线图形成受控公开问答；真实引用与回执通过验证。'],
+  ['2026.07.22', 'SAGE V7 Beta 收口', 'Chat Harness 2.0 成为新会话默认 runtime profile，持续学习手册和发布入口完成。'],
+  ['2026.07.16', 'Knowledge 与 Practice 统一进入 Harness', '来源快照、提案、引用和受控工作区不再由孤立页面维护重复运行时。'],
+  ['2026.07.02', 'SAGE 仓库公开', 'Personal AI Learning Companion 形成公开仓库、产品截图、架构说明和 CI 门禁。'],
+  ['2026.05', 'Pico Agent 实验', '围绕代码 Agent 的上下文膨胀、任务恢复、工具副作用和结构化记忆建立第一套系统认识。'],
+];
+---
+<BaseLayout title="成长记录 — ZeroMadLife" description="SAGE、Agent 工程与能力迁移的公开时间线。">
+  <header class="page-head"><div class="column"><p class="eyebrow">Growth Log / 成长记录</p><h1 class="page-title">过程不是花絮。</h1><p class="description">这里保留可以公开验证的项目里程碑和学习轨迹。原始面试记录、公司信息和私人判断只留在内部知识库。</p></div></header>
+  <section class="column" style="padding:56px 0 84px"><div class="timeline">{events.map(([date,title,text]) => <div class="timeline-item"><time>{date}</time><div><h3>{title}</h3><p>{text}</p></div></div>)}</div></section>
+</BaseLayout>

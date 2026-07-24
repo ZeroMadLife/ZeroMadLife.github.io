@@ -1,0 +1,31 @@
+---
+import { GitBranch, ArrowUpRight } from '@lucide/astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+const now = [
+  ['RUNTIME', '可恢复 Agent Harness', '事件、上下文、工具、审批与证据。'],
+  ['KNOWLEDGE', '来源驱动的知识系统', '检索不是终点，引用和写入门禁同样重要。'],
+  ['BACKEND', '模型系统可靠性', '状态、幂等、权限、隔离与可观测性。'],
+  ['COMMUNICATION', '把项目讲清楚', '用真实证据替代宽泛的技术栈清单。'],
+];
+---
+<BaseLayout title="关于 — ZeroMadLife" description="福州大学计算机技术研究生，Java 后端与 AI Agent 工程实践者。">
+  <header class="page-head"><div class="column"><p class="eyebrow">About / 关于</p><h1 class="page-title">ZeroMadLife</h1><p class="description">福州大学计算机技术研究生。持续进行 Java 后端与 AI Agent 工程实践，关注 Agent 原生开发、系统代码化和长期可恢复的软件工作流。</p></div></header>
+
+  <section class="column sage-intro">
+    <h2>构建，也留下为什么。</h2>
+    <div>
+      <p>我把 SAGE 作为主要实践场：研究 Chat Harness、Context Engineering、Knowledge/RAG、Skills、MCP、Practice Engine 和 Sandbox，也把后端工程中的状态、权限、可观测性与发布门禁带进模型驱动系统。</p>
+      <p>这个博客不是原始面经仓库。公开文章来自项目实践和内部笔记，但必须经过技术重写、脱敏与人工确认。希望最终留下的不是答案集合，而是可以解释和复用的工程判断。</p>
+      <div class="link-row" style="margin-top:4px"><a class="command-link primary" href="https://github.com/ZeroMadLife"><GitBranch size={15}/> GitHub</a><a class="command-link" href="https://sagecompanion.top">体验 SAGE <ArrowUpRight size={15}/></a></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="rubric"><div class="rubric-title"><h2>Now</h2><span>当前关注</span></div></div>
+      <div class="capability-table">
+        {now.map(([tag, title, text]) => <div class="capability-row"><strong>{title}</strong><span><span style="font-family:var(--mono);color:var(--accent);font-size:.72rem">{tag}</span><br/>{text}</span></div>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

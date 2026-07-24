@@ -1,0 +1,73 @@
+---
+import { ArrowUpRight, GitBranch } from '@lucide/astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+const capabilities = [
+  ['Chat Harness', 'WebSocket 流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。'],
+  ['Practice Engine', '文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。'],
+  ['Knowledge Platform', '来源快照、Wiki 提案、混合检索、RRF 与稳定 citation。'],
+  ['Runtime Extension', 'Skills、MCP、受限子 Agent、Provider capability 与运行配置。'],
+  ['Safety Boundary', '路径 containment、fresh-read、权限模式、危险操作审批与 Container Sandbox。'],
+];
+const shots = [
+  ['/images/sage/assistant.webp', 'SAGE Assistant 首页', 'Assistant · 从目标开始'],
+  ['/images/sage/knowledge.webp', 'SAGE Knowledge 工作区', 'Knowledge · 从来源到可引用知识'],
+  ['/images/sage/practice.webp', 'SAGE Practice 工作区', 'Practice · 用真实执行验证理解'],
+];
+const arch = [
+  ['01 / CLIENT', 'Vue 3 + Pinia'],
+  ['02 / API', 'FastAPI + WebSocket'],
+  ['03 / RUNTIME', 'sage_harness + Skills + MCP'],
+  ['04 / DATA', 'PostgreSQL · Redis · SQLite'],
+];
+---
+<BaseLayout title="SAGE — Personal AI Learning Companion" description="让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。">
+  <header class="page-head">
+    <div class="column">
+      <p class="eyebrow">Flagship Project / 代表项目</p>
+      <h1 class="page-title">SAGE</h1>
+      <p class="description">Personal AI Learning Companion。让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
+      <div class="link-row" style="margin-top:24px">
+        <a class="command-link primary" href="https://sagecompanion.top">公开体验 <ArrowUpRight size={15}/></a>
+        <a class="command-link" href="https://github.com/ZeroMadLife/sage-agent"><GitBranch size={15}/> GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="column sage-intro">
+    <h2>不只是另一个聊天框。</h2>
+    <div>
+      <p>SAGE 把对话、代码仓库、Markdown/Obsidian 知识、模型 Provider、Skills 和 MCP 工具组织进同一套 Chat Harness，让一次回答能够继续成为可追溯的知识、实践记录和下一步行动。</p>
+      <p>Coding 被设计成 Practice Engine：阅读源码、修改代码、运行测试并验证理解。Knowledge 保存来源、提案、检索与引用；所有可能改变代码、长期知识或外部系统的操作都保留证据和控制点。</p>
+      <p class="note">项目处于快速开发与受控公开 beta。正式开放公网 Harness 前，仍需完成生产 Sandbox、租户级 Knowledge 隔离与部署门禁。</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="feature-frame"><img src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="1600" height="860" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="section-heading"><p class="eyebrow">Product Surfaces / 产品界面</p><h2>目标、知识与实践</h2></div>
+      <div class="screenshot-strip">
+        {shots.map(([src, alt, cap]) => <figure><img src={src} alt={alt} width="1440" height="900" loading="lazy"/><figcaption>{cap}</figcaption></figure>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="section-heading"><p class="eyebrow">Capabilities / 核心能力</p><h2>工程底座</h2></div>
+      <div class="capability-table">{capabilities.map(([name, text]) => <div class="capability-row"><strong>{name}</strong><span>{text}</span></div>)}</div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="section-heading"><p class="eyebrow">Architecture / 架构</p><h2>稳定端口，清晰边界</h2></div>
+      <div class="architecture">{arch.map(([tag, name]) => <div class="arch-node"><span>{tag}</span><strong>{name}</strong></div>)}</div>
+    </div>
+  </section>
+</BaseLayout>
