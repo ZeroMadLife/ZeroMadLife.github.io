@@ -66,6 +66,13 @@ const nav = [
       </div>
     </header>
     <main id="main"><slot /></main>
+    <dialog id="lightbox" class="lightbox" aria-label="图片预览">
+      <img src="" alt="" />
+      <div class="lightbox-bar">
+        <span class="lightbox-cap"></span>
+        <button class="lightbox-close" type="button" aria-label="关闭预览">✕</button>
+      </div>
+    </dialog>
     <footer class="site-footer">
       <div class="container footer-grid">
         <div>
@@ -94,6 +101,48 @@ const nav = [
         localStorage.setItem('theme', root.dataset.theme || 'light');
         sync();
       });
+    </script>
+    <script is:inline>
+      // Scroll reveal — progressive enhancement. Content is visible by default;
+      // we only add the hidden start-state when JS + IntersectionObserver exist.
+      (function () {
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const targets = document.querySelectorAll('[data-reveal]');
+        if (reduce || !('IntersectionObserver' in window) || !targets.length) return;
+        document.documentElement.classList.add('reveal-ready');
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const delay = Number(el.getAttribute('data-reveal')) || 0;
+              el.style.transitionDelay = delay + 'ms';
+              el.classList.add('is-in');
+              io.unobserve(el);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+        targets.forEach((el) => io.observe(el));
+      })();
+
+      // Lightbox — click any [data-zoom] image to open a full-size dialog.
+      (function () {
+        const dlg = document.getElementById('lightbox');
+        if (!dlg) return;
+        const img = dlg.querySelector('img');
+        const cap = dlg.querySelector('.lightbox-cap');
+        document.querySelectorAll('[data-zoom]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const src = btn.getAttribute('data-zoom');
+            const alt = btn.getAttribute('data-caption') || '';
+            if (img) { img.src = src; img.alt = alt; }
+            if (cap) cap.textContent = alt;
+            if (typeof dlg.showModal === 'function') dlg.showModal();
+          });
+        });
+        const close = () => dlg.close();
+        dlg.querySelector('.lightbox-close')?.addEventListener('click', close);
+        dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+      })();
     </script>
   </body>
 </html>

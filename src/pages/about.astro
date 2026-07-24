@@ -1,6 +1,14 @@
 ---
 import { GitBranch, ArrowUpRight } from '@lucide/astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+const experience = [
+  ['2026.06 – 至今', '三棵树涂料股份有限公司', 'AI 算法工程师（实习）', '智能招聘系统：简历解析、人岗匹配、关系核验与人才盯盘。基于 Redis/RQ 异步解析管线处理 PDF/Word/图片混合输入，解析成功率约 85%→98%；人才盯盘 Agent 用 ReAct 封装多平台检索，以执行计划与工具协议约束批量任务。技术栈 Python、FastAPI、Redis/RQ、NetworkX、LangChain、百炼大模型。'],
+  ['2026.03 – 2026.06', '随意约网络技术有限公司', 'Java 后端开发（实习）', '省级交通数据中台与治超系统：基于 Spring Boot、Spring Cloud Alibaba、MyBatis-Plus、Nacos、Feign 开发数据交换能力；设计配置驱动执行链完成“接入推送→标准入库→运行日志→接出查询”端到端验证；统计链路用预聚合 + Redis 热点缓存 + 实时 SQL 回退优化。'],
+];
+const education = [
+  ['2024.09 – 2027.06', '福州大学', '计算机技术（硕士）'],
+  ['2020.10 – 2024.06', '福建农林大学', '计算机科学与技术（本科）'],
+];
 const now = [
   ['RUNTIME', '可恢复 Agent Harness', '事件、上下文、工具、审批与证据。'],
   ['KNOWLEDGE', '来源驱动的知识系统', '检索不是终点，引用和写入门禁同样重要。'],
@@ -9,21 +17,44 @@ const now = [
 ];
 ---
 <BaseLayout title="关于 — ZeroMadLife" description="福州大学计算机技术研究生，Java 后端与 AI Agent 工程实践者。">
-  <header class="page-head"><div class="column"><p class="eyebrow">About / 关于</p><h1 class="page-title">ZeroMadLife</h1><p class="description">福州大学计算机技术研究生。持续进行 Java 后端与 AI Agent 工程实践，关注 Agent 原生开发、系统代码化和长期可恢复的软件工作流。</p></div></header>
+  <header class="page-head"><div class="column"><p class="eyebrow">About / 关于</p><h1 class="page-title">林欣 / ZeroMadLife</h1><p class="description">福州大学计算机技术研究生。持续进行 Java 后端与 AI Agent 工程实践，关注 Agent 原生开发、系统代码化和长期可恢复的软件工作流。</p></div></header>
 
   <section class="column sage-intro">
     <h2>构建，也留下为什么。</h2>
     <div>
-      <p>我把 SAGE 作为主要实践场：研究 Chat Harness、Context Engineering、Knowledge/RAG、Skills、MCP、Practice Engine 和 Sandbox，也把后端工程中的状态、权限、可观测性与发布门禁带进模型驱动系统。</p>
-      <p>这个博客不是原始面经仓库。公开文章来自项目实践和内部笔记，但必须经过技术重写、脱敏与人工确认。希望最终留下的不是答案集合，而是可以解释和复用的工程判断。</p>
+      <p>我是林欣，计算机技术研究生，做 AI 应用开发和后端工程。方向集中在三件事：把 Agent 做成可恢复、可解释的工程系统；用来源和引用约束知识写入；把后端的状态、权限、可观测性带进模型驱动的系统。</p>
+      <p>SAGE 是我的主要实践场，围绕 Chat Harness、Context Engineering、Knowledge/RAG、Skills、MCP、Practice Engine 与 Sandbox 展开。这个网站记录这些实践里沉淀下来的工程结论、设计取舍和可复用的技术表达。</p>
+      <p>写在这里的内容都来自真实项目，希望留下的不是零散笔记，而是可以解释、可以复用的工程判断。</p>
       <div class="link-row" style="margin-top:4px"><a class="command-link primary" href="https://github.com/ZeroMadLife"><GitBranch size={15}/> GitHub</a><a class="command-link" href="https://sagecompanion.top">体验 SAGE <ArrowUpRight size={15}/></a></div>
     </div>
   </section>
 
   <section class="band">
     <div class="column">
-      <div class="rubric"><div class="rubric-title"><h2>Now</h2><span>当前关注</span></div></div>
-      <div class="capability-table">
+      <div class="rubric" data-reveal><div class="rubric-title"><h2>Experience</h2><span>工作经历</span></div></div>
+      <div class="timeline" data-reveal="60">
+        {experience.map(([date, org, role, text]) => (
+          <div class="timeline-item"><time>{date}</time><div><h3>{org} · {role}</h3><p>{text}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="rubric" data-reveal><div class="rubric-title"><h2>Education</h2><span>教育背景</span></div></div>
+      <div class="timeline" data-reveal="60">
+        {education.map(([date, org, degree]) => (
+          <div class="timeline-item"><time>{date}</time><div><h3>{org}</h3><p>{degree}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="column">
+      <div class="rubric" data-reveal><div class="rubric-title"><h2>Now</h2><span>当前关注</span></div></div>
+      <div class="capability-table" data-reveal="60">
         {now.map(([tag, title, text]) => <div class="capability-row"><strong>{title}</strong><span><span style="font-family:var(--mono);color:var(--accent);font-size:.72rem">{tag}</span><br/>{text}</span></div>)}
       </div>
     </div>

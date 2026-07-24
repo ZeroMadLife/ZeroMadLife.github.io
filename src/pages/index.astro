@@ -16,19 +16,25 @@ const notes = [
 <BaseLayout>
   <section class="intro-block">
     <div class="column">
-      <h1 class="name">ZeroMadLife</h1>
-      <p class="role">AI Agent Engineer · Java Backend · 福州</p>
-      <p class="bio">构建 SAGE，也记录成为 Agent 工程师的过程。关注可恢复 Harness、Knowledge/RAG、Practice Engine，以及模型系统如何真正进入工程。</p>
+      <div class="identity">
+        <!-- 头像：使用 GitHub 头像。如需更换，替换 public/images/avatar.webp 即可 -->
+        <img class="avatar" src="/images/avatar.webp" alt="林欣头像" width="84" height="84" />
+        <div>
+          <h1 class="name">林欣 <small>/ ZeroMadLife</small></h1>
+          <p class="role">AI 应用开发 / 后端工程师 · 福州</p>
+        </div>
+      </div>
+      <p class="bio">做 Agent 工程，也把后端的状态、权限与可观测性带进模型系统。在这里记录构建、学习和思考。</p>
     </div>
   </section>
 
   <section class="band">
     <div class="column">
-      <div class="rubric">
+      <div class="rubric" data-reveal>
         <div class="rubric-title"><h2>Featured work</h2><span>代表项目</span></div>
         <a class="more" href="/sage/">阅读全部 →</a>
       </div>
-      <div class="featured">
+      <div class="featured" data-reveal="60">
         <div>
           <p class="kicker">Personal AI Learning Companion</p>
           <h3>SAGE</h3>
@@ -47,11 +53,11 @@ const notes = [
 
   <section class="band">
     <div class="column">
-      <div class="rubric">
+      <div class="rubric" data-reveal>
         <div class="rubric-title"><h2>Latest writing</h2><span>最近写作</span></div>
         <a class="more" href="/posts/">全部文章 →</a>
       </div>
-      <div class="stream">
+      <div class="stream" data-reveal="60">
         {latest.map((post) => (
           <a class="stream-item" href={`/posts/${post.id}/`}>
             <span class="t">{post.data.title}</span>
@@ -64,11 +70,11 @@ const notes = [
 
   <section class="band">
     <div class="column">
-      <div class="rubric">
+      <div class="rubric" data-reveal>
         <div class="rubric-title"><h2>Field notes</h2><span>最近动态</span></div>
         <a class="more" href="/growth/">完整时间线 →</a>
       </div>
-      <div class="timeline">
+      <div class="timeline" data-reveal="60">
         {notes.map(([date, title, text]) => (
           <div class="timeline-item"><time>{date}</time><div><h3>{title}</h3><p>{text}</p></div></div>
         ))}

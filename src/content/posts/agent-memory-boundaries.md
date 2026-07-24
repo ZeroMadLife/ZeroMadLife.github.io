@@ -39,6 +39,6 @@ publish: true
 
 SAGE 将原始来源、知识提案和已批准知识分离，就是为了让模型可以提出候选，但不能把候选直接变成事实。
 
-## 面试中如何表达
+## 工程上如何表达清楚
 
-面对“Agent Memory 怎么设计”时，不要只回答向量数据库。先区分 Context、Working Memory、Durable Memory 和 Knowledge，再说明每一层的生命周期、写入门禁与恢复方式。工程判断往往比组件名称更重要。
+谈“Agent Memory 怎么设计”时，不要停在向量数据库。先区分 Context、Working Memory、Durable Memory 和 Knowledge，再说明每一层的生命周期、写入门禁与恢复方式。工程判断往往比组件名称更重要。

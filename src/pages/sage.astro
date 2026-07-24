@@ -1,6 +1,21 @@
 ---
-import { ArrowUpRight, GitBranch } from '@lucide/astro';
+import { ArrowUpRight, GitBranch, Star } from '@lucide/astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// 构建时拉取 GitHub star 数；失败时回退到静态值，不让构建中断。
+let stars = 8;
+try {
+  const res = await fetch('https://api.github.com/repos/ZeroMadLife/sage-agent', {
+    headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'zeromadlife-blog' },
+  });
+  if (res.ok) {
+    const data = await res.json();
+    if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
+  }
+} catch (e) {
+  // 网络/限流时保留回退值
+}
+
 const capabilities = [
   ['Chat Harness', 'WebSocket 流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。'],
   ['Practice Engine', '文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。'],
@@ -26,9 +41,10 @@ const arch = [
       <p class="eyebrow">Flagship Project / 代表项目</p>
       <h1 class="page-title">SAGE</h1>
       <p class="description">Personal AI Learning Companion。让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
-      <div class="link-row" style="margin-top:24px">
+      <div class="link-row" style="margin-top:24px;align-items:center">
         <a class="command-link primary" href="https://sagecompanion.top">公开体验 <ArrowUpRight size={15}/></a>
         <a class="command-link" href="https://github.com/ZeroMadLife/sage-agent"><GitBranch size={15}/> GitHub</a>
+        <a class="stat-star" href="https://github.com/ZeroMadLife/sage-agent/stargazers" aria-label={`GitHub ${stars} stars`}><Star size={15}/> {stars}</a>
       </div>
     </div>
   </header>
@@ -44,30 +60,40 @@ const arch = [
 
   <section class="band">
     <div class="column">
-      <div class="feature-frame"><img src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="1600" height="860" loading="lazy" /></div>
+      <div class="feature-frame" data-reveal><img src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="2048" height="1152" loading="lazy" /></div>
     </div>
   </section>
 
   <section class="band">
     <div class="column">
-      <div class="section-heading"><p class="eyebrow">Product Surfaces / 产品界面</p><h2>目标、知识与实践</h2></div>
+      <div class="section-heading" data-reveal><p class="eyebrow">Product Surfaces / 产品界面</p><h2>目标、知识与实践</h2></div>
       <div class="screenshot-strip">
-        {shots.map(([src, alt, cap]) => <figure><img src={src} alt={alt} width="1440" height="900" loading="lazy"/><figcaption>{cap}</figcaption></figure>)}
+        {shots.map(([src, alt, cap], i) => (
+          <figure data-reveal={String(i * 60)}>
+            <div class="shot-frame">
+              <div class="shot-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+              <button class="shot-open" type="button" data-zoom={src} data-caption={alt} aria-label={`放大查看：${alt}`}>
+                <img src={src} alt={alt} width="1440" height="900" loading="lazy"/>
+              </button>
+            </div>
+            <figcaption>{cap}</figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   </section>
 
   <section class="band">
     <div class="column">
-      <div class="section-heading"><p class="eyebrow">Capabilities / 核心能力</p><h2>工程底座</h2></div>
-      <div class="capability-table">{capabilities.map(([name, text]) => <div class="capability-row"><strong>{name}</strong><span>{text}</span></div>)}</div>
+      <div class="section-heading" data-reveal><p class="eyebrow">Capabilities / 核心能力</p><h2>工程底座</h2></div>
+      <div class="capability-table" data-reveal="60">{capabilities.map(([name, text]) => <div class="capability-row"><strong>{name}</strong><span>{text}</span></div>)}</div>
     </div>
   </section>
 
   <section class="band">
     <div class="column">
-      <div class="section-heading"><p class="eyebrow">Architecture / 架构</p><h2>稳定端口，清晰边界</h2></div>
-      <div class="architecture">{arch.map(([tag, name]) => <div class="arch-node"><span>{tag}</span><strong>{name}</strong></div>)}</div>
+      <div class="section-heading" data-reveal><p class="eyebrow">Architecture / 架构</p><h2>稳定端口，清晰边界</h2></div>
+      <div class="architecture" data-reveal="60">{arch.map(([tag, name]) => <div class="arch-node"><span>{tag}</span><strong>{name}</strong></div>)}</div>
     </div>
   </section>
 </BaseLayout>

@@ -9,6 +9,6 @@ const events = [
 ];
 ---
 <BaseLayout title="成长记录 — ZeroMadLife" description="SAGE、Agent 工程与能力迁移的公开时间线。">
-  <header class="page-head"><div class="column"><p class="eyebrow">Growth Log / 成长记录</p><h1 class="page-title">过程不是花絮。</h1><p class="description">这里保留可以公开验证的项目里程碑和学习轨迹。原始面试记录、公司信息和私人判断只留在内部知识库。</p></div></header>
+  <header class="page-head"><div class="column"><p class="eyebrow">Growth Log / 成长记录</p><h1 class="page-title">过程不是花絮。</h1><p class="description">这里保留可以公开验证的项目里程碑和学习轨迹。</p></div></header>
   <section class="column" style="padding:56px 0 84px"><div class="timeline">{events.map(([date,title,text]) => <div class="timeline-item"><time>{date}</time><div><h3>{title}</h3><p>{text}</p></div></div>)}</div></section>
 </BaseLayout>

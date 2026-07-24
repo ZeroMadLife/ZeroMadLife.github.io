@@ -1,0 +1,13 @@
+<!-- Placeholder monogram avatar. Replace by dropping a real photo at public/images/avatar.webp
+     and updating the <img src> in src/pages/index.astro to /images/avatar.webp -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="ZeroMadLife 头像占位">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f8a58"/>
+      <stop offset="1" stop-color="#1f6b43"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="48" fill="url(#bg)"/>
+  <text x="50%" y="50%" dy=".04em" text-anchor="middle" dominant-baseline="central"
+        font-family="'Newsreader', Georgia, serif" font-size="46" font-weight="600" fill="#f7f8f5">林</text>
+</svg>
