@@ -10,8 +10,8 @@
   --line-soft: #e7ebe6;
   --accent: #287a4d;
   --accent-soft: #e7f2ea;
-  --code: #111512;
-  --code-ink: #e8efe9;
+  --code: #edf1ec;
+  --code-ink: #26352b;
   --max: 1080px;
   --column: 680px;
   --reading: 720px;
@@ -31,8 +31,8 @@
   --line-soft: #262b26;
   --accent: #72bf8f;
   --accent-soft: #203729;
-  --code: #0a0d0b;
-  --code-ink: #e8efe9;
+  --code: #1b211c;
+  --code-ink: #dce6de;
   color-scheme: dark;
 }
 
@@ -315,11 +315,14 @@ a.tag:hover { color: var(--ink); }
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .prose strong { font-weight: 600; }
 .prose blockquote { padding: 2px 0 2px 20px; border-left: 3px solid var(--accent); color: var(--muted); }
-.prose pre { overflow-x: auto; padding: 20px; border-radius: 8px; background: var(--code) !important; color: var(--code-ink); font-size: .86rem; line-height: 1.65; }
+.prose pre { overflow-x: auto; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--code) !important; color: var(--code-ink) !important; font-size: .86rem; line-height: 1.65; }
 .prose code { font-family: var(--mono); font-size: .88em; word-break: break-word; }
 .prose :not(pre) > code { padding: 2px 5px; border-radius: 4px; background: var(--accent-soft); color: var(--ink); }
-.prose pre code { word-break: normal; }
+.prose pre code, .prose pre span { color: var(--code-ink) !important; word-break: normal; }
 .prose img { margin: 2.2rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.prose .article-figure { margin: 2.2rem 0; }
+.prose .article-figure img { width: 100%; height: auto; margin: 0; aspect-ratio: 16 / 9; object-fit: cover; }
+.prose .article-figure figcaption { margin-top: 10px; color: var(--faint); font-size: .8rem; line-height: 1.5; }
 
 /* ---------- SAGE page ---------- */
 .sage-intro { padding: 54px 0; display: grid; grid-template-columns: .85fr 1.15fr; gap: 56px; }
