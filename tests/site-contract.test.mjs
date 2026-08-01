@@ -10,6 +10,7 @@ const postSlugs = [
   "agent-evaluation-four-layers",
   "agent-memory-boundaries",
   "chat-harness-2",
+  "claude-5-stateless-mcp",
   "java-to-agent-engineering",
   "loop-to-graph-engineering",
   "rag-tradeoffs-restraint",
@@ -33,7 +34,7 @@ function readGeneratedText() {
   return files.join("\n");
 }
 
-test("the seven public article URLs remain available", () => {
+test("the public article URLs remain available", () => {
   for (const slug of postSlugs) {
     assert.ok(
       existsSync(join(dist, "posts", slug, "index.html")),
