@@ -89,6 +89,57 @@ test("the generated home page exposes the reference-theme controls", () => {
   );
 });
 
+test("the about page presents identity, current work, and a future learning path", () => {
+  const html = readFileSync(join(dist, "about", "index.html"), "utf8");
+  for (const signal of [
+    "关于我",
+    "我是林欣",
+    "最近在做什么",
+    "我的发展路径",
+    "未来想成为什么人",
+    "AI HOT",
+  ]) {
+    assert.match(html, new RegExp(signal));
+  }
+  assert.doesNotMatch(html, /怎么维护|只有 visibility|关于主题|Obsidian|公开知识层/);
+});
+
+test("the skills page describes the real capability boundaries", () => {
+  const html = readFileSync(join(dist, "skills", "index.html"), "utf8");
+  for (const signal of [
+    "技术栈与能力边界",
+    "Java 后端",
+    "Python / FastAPI",
+    "Linux / Docker / 交付",
+    "尚未主导生产级 Kubernetes 集群",
+    "Vue3 前端协作",
+  ]) {
+    assert.match(html, new RegExp(signal));
+  }
+  assert.doesNotMatch(html, /Astro \/ Mizuki|专家级/);
+});
+
+test("public article tags use the compact canonical vocabulary", () => {
+  const expected = new Set([
+    "Agent 工程",
+    "Harness",
+    "SAGE",
+    "知识系统",
+    "Java 后端",
+    "RAG",
+    "评测",
+    "Graph Engineering",
+  ]);
+  const tags = new Set();
+  for (const file of readdirSync(join(root, "src/content/posts"))) {
+    const source = readFileSync(join(root, "src/content/posts", file), "utf8");
+    const match = source.match(/^tags:\s*\[([^\]]*)\]/m);
+    assert.ok(match, `missing tags in ${file}`);
+    for (const tag of match[1].split(",")) tags.add(tag.trim());
+  }
+  assert.deepEqual(tags, expected);
+});
+
 test("the generated site ships the dark-first theme variables", () => {
   const generated = readGeneratedText();
   const constants = readFileSync(
@@ -156,6 +207,17 @@ test("production and self-hosted deployment contracts remain available", () => {
   );
   assert.match(workflow, /actions\/setup-node@v7/);
   assert.match(workflow, /mkdir -p \/var\/www\/blog\.sagecompanion\.top\/releases\/\$\{GITHUB_SHA\}/);
+});
+
+test("the AI topic radar stays outside the public build pipeline", () => {
+  const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  assert.equal(packageJson.scripts.radar, "node scripts/aihot-radar.mjs");
+  assert.doesNotMatch(packageJson.scripts.build, /radar|aihot/i);
+
+  const radar = readFileSync(join(root, "scripts", "aihot-radar.mjs"), "utf8");
+  assert.match(radar, /00_收件箱/);
+  assert.match(radar, /AI选题雷达/);
+  assert.doesNotMatch(radar, /src\/content\/posts/);
 });
 
 test("content keeps the fail-closed publication gate", () => {

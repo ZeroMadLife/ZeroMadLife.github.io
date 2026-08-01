@@ -3,7 +3,7 @@ title: "指标变好了，但默认没开：SAGE RAG 的几个工程取舍"
 description: "把 PostgreSQL 全文检索 + 精确向量 + RRF 接进 SAGE，并在同一协议下比较 FastEmbed、百炼和豆包后，百炼在冻结测试把 Recall@10 从 0.889 提到 1.000。但它仍然默认关闭。记录这次 RAG 工程化里几个由证据而不是技术标签决定的取舍。"
 published: 2026-07-28
 category: agent
-tags: [SAGE, RAG, 检索工程, 评测, PostgreSQL, pgvector]
+tags: [SAGE, RAG, 评测]
 featured: false
 draft: false
 visibility: public

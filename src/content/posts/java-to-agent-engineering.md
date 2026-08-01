@@ -3,7 +3,7 @@ title: "从 Java 后端到 Agent 工程：哪些能力可以直接迁移"
 description: "Agent 工程不是抛弃后端基础，而是把协议、状态、权限和可观测性带进模型驱动系统。"
 published: 2026-07-18
 category: backend
-tags: [Java, Career, Engineering]
+tags: [Java 后端, Agent 工程]
 featured: false
 draft: false
 visibility: public

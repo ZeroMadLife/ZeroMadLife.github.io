@@ -1,59 +1,57 @@
-/* This is a script to create a new post markdown file with front-matter */
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 
-import fs from "fs";
-import path from "path";
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-function getDate() {
-	const today = new Date();
-	const year = today.getFullYear();
-	const month = String(today.getMonth() + 1).padStart(2, "0");
-	const day = String(today.getDate()).padStart(2, "0");
-
-	return `${year}-${month}-${day}`;
+function formatDate(date) {
+	return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
 }
 
-const args = process.argv.slice(2);
-
-if (args.length === 0) {
-	console.error(`Error: No filename argument provided
-Usage: npm run new-post -- <filename>`);
-	process.exit(1); // Terminate the script and return error code 1
+function parseArguments(args) {
+	const slug = args[0];
+	const titleIndex = args.indexOf("--title");
+	const title = titleIndex >= 0 ? args[titleIndex + 1] : slug;
+	if (!slug || !title) {
+		throw new Error('Usage: pnpm new-post -- <slug> --title "文章标题"');
+	}
+	if (!/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.mdx?)?$/i.test(slug)) {
+		throw new Error("Slug 只能包含英文字母、数字和连字符，不能包含目录或路径字符");
+	}
+	return { slug: /\.mdx?$/i.test(slug) ? slug : `${slug}.md`, title };
 }
 
-let fileName = args[0];
-
-// Add .md extension if not present
-const fileExtensionRegex = /\.(md|mdx)$/i;
-if (!fileExtensionRegex.test(fileName)) {
-	fileName += ".md";
-}
-
-const targetDir = "./src/content/posts/";
-const fullPath = path.join(targetDir, fileName);
-
-if (fs.existsSync(fullPath)) {
-	console.error(`Error: File ${fullPath} already exists `);
-	process.exit(1);
-}
-
-// recursive mode creates multi-level directories
-const dirPath = path.dirname(fullPath);
-if (!fs.existsSync(dirPath)) {
-	fs.mkdirSync(dirPath, { recursive: true });
-}
-
-const content = `---
-title: ${args[0]}
-published: ${getDate()}
-description: ''
-image: ''
+export function createPost({ args, targetDir, now = new Date() }) {
+	const { slug, title } = parseArguments(args);
+	const outputDir = path.resolve(targetDir || process.env.BLOG_POSTS_DIR || path.join(repoRoot, "src/content/posts"));
+	const fullPath = path.join(outputDir, slug);
+	if (path.dirname(fullPath) !== outputDir) throw new Error("目标文件必须位于文章目录内");
+	fs.mkdirSync(outputDir, { recursive: true });
+	const content = `---
+title: ${JSON.stringify(title)}
+published: ${formatDate(now)}
+description: ""
+image: ""
 tags: []
-category: ''
-draft: false
-lang: ''
+category: ""
+draft: true
+visibility: public
+publish: true
+lang: zh_CN
 ---
+
+# ${title}
 `;
+	fs.writeFileSync(fullPath, content, { encoding: "utf8", flag: "wx" });
+	return fullPath;
+}
 
-fs.writeFileSync(path.join(targetDir, fileName), content);
-
-console.log(`Post ${fullPath} created`);
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+	try {
+		console.log(`Draft created: ${createPost({ args: process.argv.slice(2) })}`);
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		process.exitCode = 1;
+	}
+}

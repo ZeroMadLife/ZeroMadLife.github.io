@@ -3,7 +3,7 @@ title: "Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering"
 description: "Loop 负责节点内部的执行闭环，Graph 负责节点之间的依赖、并行与恢复。结合 DeerFlow 和 SAGE，讨论复杂 Agent 任务真正需要的工程边界。"
 published: 2026-07-25
 category: agent
-tags: [Loop Engineering, Graph Engineering, DeerFlow, SAGE, LangGraph]
+tags: [Agent 工程, Graph Engineering, SAGE]
 featured: false
 draft: false
 visibility: public

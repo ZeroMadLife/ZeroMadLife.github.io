@@ -16,8 +16,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit",
-    "test": "node --test tests/markdown-enhancements.test.mjs && node tests/crypto.test.mjs",
+    "test": "pnpm build && node --test tests/*.test.mjs",
     "new-post": "node scripts/new-post.js",
+    "radar": "node scripts/aihot-radar.mjs",
+    "test:radar": "node --test tests/aihot-radar.test.mjs",
+    "test:new-post": "node --test tests/new-post.test.mjs",
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
     "preinstall": "npx only-allow pnpm"
