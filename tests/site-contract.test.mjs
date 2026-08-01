@@ -125,7 +125,10 @@ test("archive filters bypass Swup so query parameters remain authoritative", () 
 });
 
 test("production and self-hosted deployment contracts remain available", () => {
-  assert.equal(existsSync(join(root, "CNAME")), false);
+  assert.equal(
+    readFileSync(join(root, "CNAME"), "utf8").trim(),
+    "blog.sagecompanion.top",
+  );
   assert.equal(
     readFileSync(join(root, "public", "CNAME"), "utf8").trim(),
     "blog.sagecompanion.top",

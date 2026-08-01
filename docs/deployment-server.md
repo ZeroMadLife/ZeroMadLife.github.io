@@ -2,7 +2,7 @@
 
 站点构建为纯静态文件，不需要 Node.js 常驻进程、数据库或 CMS。文章在本地 `src/content/posts/` 维护，服务器只提供 `dist/`。
 
-当前生产域名仍由 GitHub Pages 承载；本页描述的是迁移到独立服务器时使用的发布方案。完成服务器 Web 入口、TLS 和 DNS 切换前，不要移除 `public/CNAME` 或 Pages 工作流。
+当前生产域名仍由 GitHub Pages 承载；本页描述的是迁移到独立服务器时使用的发布方案。完成服务器 Web 入口、TLS 和 DNS 切换前，不要移除仓库根目录与 `public/` 中的两个 `CNAME` 文件，也不要停用 Pages 工作流。
 
 ## 本地构建
 
