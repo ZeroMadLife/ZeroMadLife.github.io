@@ -1,99 +1,84 @@
 ---
-import { ArrowUpRight, GitBranch, Star } from '@lucide/astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-
-// 构建时拉取 GitHub star 数；失败时回退到静态值，不让构建中断。
-let stars = 8;
-try {
-  const res = await fetch('https://api.github.com/repos/ZeroMadLife/sage-agent', {
-    headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'zeromadlife-blog' },
-  });
-  if (res.ok) {
-    const data = await res.json();
-    if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
-  }
-} catch (e) {
-  // 网络/限流时保留回退值
-}
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
 
 const capabilities = [
-  ['Chat Harness', 'WebSocket 流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。'],
-  ['Practice Engine', '文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。'],
-  ['Knowledge Platform', '来源快照、Wiki 提案、混合检索、RRF 与稳定 citation。'],
-  ['Runtime Extension', 'Skills、MCP、受限子 Agent、Provider capability 与运行配置。'],
-  ['Safety Boundary', '路径 containment、fresh-read、权限模式、危险操作审批与 Container Sandbox。'],
+	["Chat Harness", "流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。"],
+	["Practice Engine", "文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。"],
+	["Knowledge Platform", "来源快照、Wiki 提案、混合检索、RRF 与稳定 citation。"],
+	["Runtime Extension", "Skills、MCP、受限子 Agent、Provider capability 与运行配置。"],
+	["Safety Boundary", "路径 containment、fresh-read、权限模式、危险操作审批与 Container Sandbox。"],
 ];
+
 const shots = [
-  ['/images/sage/assistant.webp', 'SAGE Assistant 首页', 'Assistant · 从目标开始'],
-  ['/images/sage/knowledge.webp', 'SAGE Knowledge 工作区', 'Knowledge · 从来源到可引用知识'],
-  ['/images/sage/practice.webp', 'SAGE Practice 工作区', 'Practice · 用真实执行验证理解'],
-];
-const arch = [
-  ['01 / CLIENT', 'Vue 3 + Pinia'],
-  ['02 / API', 'FastAPI + WebSocket'],
-  ['03 / RUNTIME', 'sage_harness + Skills + MCP'],
-  ['04 / DATA', 'PostgreSQL · Redis · SQLite'],
+	["/images/sage/assistant.webp", "SAGE Assistant 首页", "Assistant · 从目标开始"],
+	["/images/sage/knowledge.webp", "SAGE Knowledge 工作区", "Knowledge · 从来源到可引用知识"],
+	["/images/sage/practice.webp", "SAGE Practice 工作区", "Practice · 用真实执行验证理解"],
 ];
 ---
-<BaseLayout title="SAGE — Personal AI Learning Companion" description="让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。">
-  <header class="page-head">
-    <div class="column">
-      <p class="eyebrow">Flagship Project / 代表项目</p>
-      <h1 class="page-title">SAGE</h1>
-      <p class="description">Personal AI Learning Companion。让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
-      <div class="link-row" style="margin-top:24px;align-items:center">
-        <a class="command-link primary" href="https://sagecompanion.top">公开体验 <ArrowUpRight size={15}/></a>
-        <a class="command-link" href="https://github.com/ZeroMadLife/sage-agent"><GitBranch size={15}/> GitHub</a>
-        <a class="stat-star" href="https://github.com/ZeroMadLife/sage-agent/stargazers" aria-label={`GitHub ${stars} stars`}><Star size={15}/> {stars}</a>
-      </div>
-    </div>
-  </header>
 
-  <section class="column sage-intro">
-    <h2>不只是另一个聊天框。</h2>
-    <div>
-      <p>SAGE 把对话、代码仓库、Markdown/Obsidian 知识、模型 Provider、Skills 和 MCP 工具组织进同一套 Chat Harness，让一次回答能够继续成为可追溯的知识、实践记录和下一步行动。</p>
-      <p>Coding 被设计成 Practice Engine：阅读源码、修改代码、运行测试并验证理解。Knowledge 保存来源、提案、检索与引用；所有可能改变代码、长期知识或外部系统的操作都保留证据和控制点。</p>
-      <p class="note">项目处于快速开发与受控公开 beta。正式开放公网 Harness 前，仍需完成生产 Sandbox、租户级 Knowledge 隔离与部署门禁。</p>
-    </div>
-  </section>
+<MainGridLayout title="SAGE" description="让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。">
+	<script>
+		import("../scripts/right-sidebar-layout.js");
+	</script>
+	<article class="card-base rounded-(--radius-large) overflow-hidden mb-4">
+		<div class="px-6 sm:px-9 pt-8 pb-7">
+			<PageHeader title="SAGE" subtitle="Personal AI Learning Companion" />
+			<p class="sage-lead">让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
+			<div class="sage-actions">
+				<a href="https://sagecompanion.top" target="_blank" rel="noreferrer"><Icon name="material-symbols:open-in-new" />公开体验</a>
+				<a href="https://github.com/ZeroMadLife/sage-agent" target="_blank" rel="noreferrer"><Icon name="fa7-brands:github" />GitHub</a>
+			</div>
+		</div>
 
-  <section class="band">
-    <div class="column">
-      <div class="feature-frame" data-reveal><img src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="2048" height="1152" loading="lazy" /></div>
-    </div>
-  </section>
+		<img class="sage-cover" src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="2048" height="1152" loading="eager" />
 
-  <section class="band">
-    <div class="column">
-      <div class="section-heading" data-reveal><p class="eyebrow">Product Surfaces / 产品界面</p><h2>目标、知识与实践</h2></div>
-      <div class="screenshot-strip">
-        {shots.map(([src, alt, cap], i) => (
-          <figure data-reveal={String(i * 60)}>
-            <div class="shot-frame">
-              <div class="shot-bar" aria-hidden="true"><i></i><i></i><i></i></div>
-              <button class="shot-open" type="button" data-zoom={src} data-caption={alt} aria-label={`放大查看：${alt}`}>
-                <img src={src} alt={alt} width="1440" height="900" loading="lazy"/>
-              </button>
-            </div>
-            <figcaption>{cap}</figcaption>
-          </figure>
-        ))}
-      </div>
-    </div>
-  </section>
+		<section class="sage-section">
+			<p class="sage-kicker">WHY SAGE</p>
+			<h2>不只是另一个聊天框</h2>
+			<p>SAGE 把对话、代码仓库、Markdown/Obsidian 知识、模型 Provider、Skills 和 MCP 工具组织进同一套 Chat Harness，让一次回答继续成为可追溯的知识、实践记录和下一步行动。</p>
+			<p>Coding 被设计成 Practice Engine；Knowledge 保存来源、提案、检索与引用。所有可能改变代码、长期知识或外部系统的操作都保留证据和控制点。</p>
+		</section>
 
-  <section class="band">
-    <div class="column">
-      <div class="section-heading" data-reveal><p class="eyebrow">Capabilities / 核心能力</p><h2>工程底座</h2></div>
-      <div class="capability-table" data-reveal="60">{capabilities.map(([name, text]) => <div class="capability-row"><strong>{name}</strong><span>{text}</span></div>)}</div>
-    </div>
-  </section>
+		<section class="sage-section sage-shots">
+			<p class="sage-kicker">PRODUCT SURFACES</p>
+			<h2>目标、知识与实践</h2>
+			<div class="shot-grid">
+				{shots.map(([src, alt, caption]) => (
+					<figure>
+						<a href={src} data-fancybox="sage" data-caption={caption} data-no-swup="true"><img src={src} alt={alt} width="1440" height="900" loading="lazy" /></a>
+						<figcaption>{caption}</figcaption>
+					</figure>
+				))}
+			</div>
+		</section>
 
-  <section class="band">
-    <div class="column">
-      <div class="section-heading" data-reveal><p class="eyebrow">Architecture / 架构</p><h2>稳定端口，清晰边界</h2></div>
-      <div class="architecture" data-reveal="60">{arch.map(([tag, name]) => <div class="arch-node"><span>{tag}</span><strong>{name}</strong></div>)}</div>
-    </div>
-  </section>
-</BaseLayout>
+		<section class="sage-section">
+			<p class="sage-kicker">CAPABILITIES</p>
+			<h2>工程底座</h2>
+			<div class="capability-list">
+				{capabilities.map(([name, text]) => <div><strong>{name}</strong><span>{text}</span></div>)}
+			</div>
+		</section>
+	</article>
+</MainGridLayout>
+
+<style>
+	.sage-lead { max-width: 46rem; font-size: 1.15rem; line-height: 1.8; color: var(--text-75); }
+	.sage-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+	.sage-actions a { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.5rem; padding: 0 1rem; border-radius: .5rem; color: var(--primary); background: var(--btn-regular-bg); font-weight: 700; }
+	.sage-cover { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+	.sage-section { padding: 3.25rem 2.25rem; }
+	.sage-section + .sage-section { border-top: 1px solid var(--line-divider); }
+	.sage-kicker { color: var(--primary); font-size: .78rem; font-weight: 800; margin-bottom: .55rem; }
+	.sage-section h2 { font-size: 1.65rem; font-weight: 800; margin-bottom: 1.15rem; }
+	.sage-section > p:not(.sage-kicker) { max-width: 48rem; color: var(--text-75); line-height: 1.9; margin-top: .8rem; }
+	.shot-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.shot-grid figure { min-width: 0; }
+	.shot-grid img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: .4rem; }
+	.shot-grid figcaption { font-size: .82rem; color: var(--text-50); margin-top: .6rem; }
+	.capability-list > div { display: grid; grid-template-columns: 9rem 1fr; gap: 1.25rem; padding: 1rem 0; border-top: 1px solid var(--line-divider); }
+	.capability-list span { color: var(--text-75); line-height: 1.75; }
+	@media (max-width: 720px) { .sage-section { padding: 2.25rem 1.5rem; } .shot-grid { grid-template-columns: 1fr; } .capability-list > div { grid-template-columns: 1fr; gap: .35rem; } }
+</style>

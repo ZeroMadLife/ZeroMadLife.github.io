@@ -1,7 +1,7 @@
 ---
 title: "SAGE：让问题成为可以持续生长的证据"
 description: "SAGE 为什么不只是另一个聊天框，以及目标、知识、实践和证据如何形成可恢复的学习闭环。"
-publishDate: 2026-07-24
+published: 2026-07-24
 category: agent
 tags: [SAGE, Harness, Knowledge]
 featured: true

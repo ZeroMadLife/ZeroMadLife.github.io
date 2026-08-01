@@ -1,32 +1,20 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostList from '../../components/PostList.astro';
-const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+import PostCard from "@components/features/posts/PostCard.astro";
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPosts } from "@utils/content-utils";
+
+const posts = await getSortedPosts();
 ---
-<BaseLayout title="文章 — ZeroMadLife" description="SAGE、Agent 工程、后端系统与成长记录。">
-  <header class="page-head"><div class="column"><p class="eyebrow">Writing / 技术文章</p><h1 class="page-title">理解，必须经过实践。</h1><p class="description">记录经过项目验证的工程结论、设计取舍和可以复用的技术表达。</p></div></header>
-  <div class="column">
-    <div class="filter-bar">
-      <a class="filter-link active" href="/posts/">全部</a>
-      <a class="filter-link" href="/category/agent/">Agent 工程</a>
-      <a class="filter-link" href="/category/backend/">后端与系统</a>
-      <a class="filter-link" href="/category/growth/">成长记录</a>
-      <input id="post-search" class="search-input" type="search" placeholder="搜索标题、摘要或标签" aria-label="搜索文章" />
-    </div>
-    <PostList posts={posts} />
-    <p id="no-results" class="muted" hidden>没有找到匹配文章。</p>
-  </div>
-  <div style="height:80px"></div>
-  <script>
-    const input = document.querySelector<HTMLInputElement>('#post-search');
-    const rows = [...document.querySelectorAll<HTMLElement>('.post-row')];
-    const empty = document.querySelector<HTMLElement>('#no-results');
-    input?.addEventListener('input', () => {
-      const query = input.value.trim().toLowerCase();
-      let visible = 0;
-      rows.forEach((row) => { const show = !query || row.dataset.title?.includes(query); row.hidden = !show; if (show) visible++; });
-      if (empty) empty.hidden = visible > 0;
-    });
-  </script>
-</BaseLayout>
+
+<MainGridLayout title="文章" description="全部公开文章，按精选优先与发布时间排序。">
+	<script>
+		import("../../scripts/right-sidebar-layout.js");
+	</script>
+	<div class="card-base rounded-(--radius-large) px-6 sm:px-9 py-7 mb-4">
+		<PageHeader title="文章" subtitle={`共 ${posts.length} 篇公开记录`} />
+		<div class="flex flex-col gap-4">
+			{posts.map((entry, index) => <PostCard entry={entry} style={`--i:${index};`} />)}
+		</div>
+	</div>
+</MainGridLayout>

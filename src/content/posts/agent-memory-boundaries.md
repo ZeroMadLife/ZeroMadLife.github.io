@@ -1,7 +1,7 @@
 ---
 title: "Agent Memory 的工程边界：工作记忆、长期记忆与知识"
 description: "Memory、Context 与 Knowledge 经常被混为一谈，工程上却需要不同的写入门禁和生命周期。"
-publishDate: 2026-07-20
+published: 2026-07-20
 category: agent
 tags: [Memory, RAG, Knowledge]
 featured: false

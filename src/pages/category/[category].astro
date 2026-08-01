@@ -1,18 +1,49 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostList from '../../components/PostList.astro';
-const categories = {
-  agent: ['Agent 工程', 'Harness、Context、Knowledge、Memory、Tools 与模型系统工程。'],
-  backend: ['后端与系统', '可靠性、状态、权限、可观测性与工程基础。'],
-  growth: ['成长记录', '项目演进、技术表达和从 Java 后端到 Agent 工程的能力迁移。'],
-} as const;
-export async function getStaticPaths() { return ['agent', 'backend', 'growth'].map((category) => ({ params: { category } })); }
-const category = Astro.params.category as keyof typeof categories;
-const [title, description] = categories[category];
-const posts = (await getCollection('posts', ({ data }) => !data.draft && data.category === category)).sort((a,b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+import PostCard from "@components/features/posts/PostCard.astro";
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPosts } from "@utils/content-utils";
+
+export async function getStaticPaths() {
+	const posts = await getSortedPosts();
+	return ["agent", "backend", "growth"].map((category) => ({
+		params: { category },
+		props: {
+			posts: posts.filter((post) =>
+				category === "growth"
+					? post.data.tags.some((tag) => /growth|career|成长/i.test(tag))
+					: post.data.category === category,
+			),
+		},
+	}));
+}
+
+const category = Astro.params.category ?? "";
+const posts = Astro.props.posts;
+const labels: Record<string, string> = {
+	agent: "Agent 工程",
+	backend: "后端工程",
+	growth: "成长记录",
+};
+const title = labels[category] ?? category;
 ---
-<BaseLayout title={`${title} — ZeroMadLife`} description={description}>
-  <header class="page-head"><div class="column"><p class="eyebrow">Category / 专题</p><h1 class="page-title">{title}</h1><p class="description">{description}</p></div></header>
-  <section class="column" style="padding:48px 0 84px"><PostList posts={posts} />{posts.length === 0 && <p class="note">这个专题正在整理。内部笔记经过验证和脱敏后才会公开。</p>}</section>
-</BaseLayout>
+
+<MainGridLayout title={title} description={`${title}分类下的公开文章。`}>
+	<script>
+		import("../../scripts/right-sidebar-layout.js");
+	</script>
+	<div class="card-base rounded-(--radius-large) px-6 sm:px-9 py-7 mb-4">
+		<PageHeader title={title} subtitle={`${posts.length} 篇文章`} />
+		{
+			posts.length > 0 ? (
+				<div class="flex flex-col gap-4">
+					{posts.map((entry: any, index: number) => (
+						<PostCard entry={entry} style={`--i:${index};`} />
+					))}
+				</div>
+			) : (
+				<p class="text-black/55 dark:text-white/55 py-8">这个分类正在整理，新的公开记录会在这里出现。</p>
+			)
+		}
+	</div>
+</MainGridLayout>

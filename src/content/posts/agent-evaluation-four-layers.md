@@ -1,8 +1,8 @@
 ---
 title: "评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量"
 description: "Agent 的评测难在能力和控制纠缠在一起。以 SAGE 为例，讨论 Context、Memory、RAG、Harness 四层各自该评什么，以及如何用契约层和智能层的交叉标签让结果因果可解释。"
-publishDate: 2026-07-25
-updatedDate: 2026-07-25
+published: 2026-07-25
+updated: 2026-07-25
 category: agent
 tags: [SAGE, Agent 评测, Context Engineering, Memory, RAG, Harness]
 featured: false

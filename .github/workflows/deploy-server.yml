@@ -1,0 +1,45 @@
+name: Build and deploy static blog to server
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: static-server-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_USER != '' && secrets.DEPLOY_SSH_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.5.3
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Install SSH key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/blog_deploy
+          chmod 600 ~/.ssh/blog_deploy
+      - name: Upload static files
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+        run: |
+          ssh -i ~/.ssh/blog_deploy -p "${DEPLOY_PORT}" -o StrictHostKeyChecking=accept-new "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "mkdir -p /var/www/blog.sagecompanion.top/releases/${GITHUB_SHA}"
+          rsync -az --delete -e "ssh -i ~/.ssh/blog_deploy -p ${DEPLOY_PORT} -o StrictHostKeyChecking=accept-new" dist/ "${DEPLOY_USER}@${DEPLOY_HOST}:/var/www/blog.sagecompanion.top/releases/${GITHUB_SHA}/"
+          ssh -i ~/.ssh/blog_deploy -p "${DEPLOY_PORT}" -o StrictHostKeyChecking=accept-new "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "ln -sfn /var/www/blog.sagecompanion.top/releases/${GITHUB_SHA} /var/www/blog.sagecompanion.top/current"

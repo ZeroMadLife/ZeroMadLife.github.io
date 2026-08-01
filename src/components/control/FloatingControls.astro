@@ -1,0 +1,282 @@
+---
+import type { MarkdownHeading } from "astro";
+
+import { siteConfig } from "../../config";
+import FloatingTOC from "../features/toc/FloatingTOC.astro";
+import BackToHome from "./BackToHome.astro";
+import BackToTop from "./BackToTop.astro";
+
+interface Props {
+	headings?: MarkdownHeading[];
+}
+
+const { headings = [] } = Astro.props;
+---
+
+<div class="floating-controls-container">
+	{
+		siteConfig.toc.enable && siteConfig.toc.floating && (
+			<div class="floating-control-item" data-control-key="toc">
+				<FloatingTOC headings={headings} />
+			</div>
+		)
+	}
+	<div class="floating-control-item" data-control-key="home">
+		<BackToHome />
+	</div>
+	<div class="floating-control-item" data-control-key="top">
+		<BackToTop />
+	</div>
+</div>
+
+<style>
+	:global(:root) {
+		--fab-group-right: 1.5rem;
+		--fab-group-bottom: 4rem;
+		--fab-group-base-bottom: 4rem;
+		--fab-group-gap: 0.5rem;
+		--fab-button-size: 3rem;
+		--fab-visible-count: 1;
+	}
+
+	.floating-controls-container {
+		position: fixed;
+		z-index: 50;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		pointer-events: none;
+
+		right: var(--fab-group-right);
+		bottom: var(--fab-group-bottom);
+		transition: bottom 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.floating-control-item {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		pointer-events: auto;
+		max-height: var(--fab-button-size);
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		transform-origin: bottom right;
+		transition:
+			max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+			opacity 0.2s ease,
+			transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+			margin-top 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+		overflow: visible;
+	}
+
+	.floating-control-item.is-stacked {
+		margin-top: var(--fab-group-gap);
+	}
+
+	.floating-control-item.is-collapsed {
+		max-height: 0;
+		opacity: 0;
+		transform: translateY(0.25rem) scale(0.92);
+		margin-top: 0 !important;
+		pointer-events: none;
+	}
+
+	@media (width < 1024px) {
+		:global(:root) {
+			--fab-group-right: 1rem;
+			--fab-group-bottom: 6rem;
+			--fab-group-base-bottom: 6rem;
+		}
+
+		.floating-controls-container {
+			right: var(--fab-group-right);
+			bottom: var(--fab-group-bottom);
+		}
+	}
+
+	@media (width < 768px) {
+		:global(:root) {
+			--fab-group-right: 0.75rem;
+			--fab-group-bottom: 5rem;
+			--fab-group-base-bottom: 5rem;
+			--fab-button-size: 2.75rem;
+		}
+
+		.floating-controls-container {
+			right: var(--fab-group-right);
+			bottom: var(--fab-group-bottom);
+		}
+	}
+
+	@media (width < 480px) {
+		:global(:root) {
+			--fab-group-right: 0.5rem;
+			--fab-group-bottom: 4.5rem;
+			--fab-group-base-bottom: 4.5rem;
+			--fab-button-size: 2.5rem;
+		}
+
+		.floating-controls-container {
+			right: var(--fab-group-right);
+			bottom: var(--fab-group-bottom);
+		}
+	}
+
+	@media (width < 320px) {
+		:global(:root) {
+			--fab-group-right: 0.25rem;
+			--fab-group-bottom: 4rem;
+			--fab-group-base-bottom: 4rem;
+		}
+
+		.floating-controls-container {
+			right: var(--fab-group-right);
+			bottom: var(--fab-group-bottom);
+		}
+	}
+
+	@media (orientation: landscape) and (max-height: 500px) {
+		:global(:root) {
+			--fab-group-bottom: 4rem;
+			--fab-group-base-bottom: 4rem;
+		}
+
+		.floating-controls-container {
+			bottom: var(--fab-group-bottom);
+		}
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		if (!window.__floatingControlObservers) {
+			window.__floatingControlObservers = new Map();
+		}
+
+		if (!window.__floatingControlState) {
+			window.__floatingControlState = {
+				visibilityUpdateScheduled: false,
+				mermaidRendering: false,
+				mermaidRenderTimer: null,
+				listenersRegistered: false,
+			};
+		}
+
+		const state = window.__floatingControlState;
+		function isButtonVisible(id) {
+			const element = document.getElementById(id);
+			return Boolean(element && !element.classList.contains("hide"));
+		}
+
+		function updateFloatingControlVisibility() {
+			const items = document.querySelectorAll(
+				".floating-control-item[data-control-key]",
+			);
+			let hasVisibleItem = false;
+			let visibleCount = 0;
+
+			for (const item of items) {
+				const key = item.getAttribute("data-control-key");
+				let visible = true;
+
+				if (key === "toc") {
+					visible = isButtonVisible("floating-toc-btn");
+				} else if (key === "home") {
+					visible = isButtonVisible("back-to-home-btn");
+				} else if (key === "top") {
+					visible = isButtonVisible("back-to-top-btn");
+				}
+
+				item.classList.toggle("is-collapsed", !visible);
+				item.classList.toggle("is-stacked", visible && hasVisibleItem);
+
+				if (visible) {
+					hasVisibleItem = true;
+					visibleCount += 1;
+				}
+			}
+
+			document.documentElement.style.setProperty(
+				"--fab-visible-count",
+				String(Math.max(visibleCount, 1)),
+			);
+		}
+
+		function observeFloatingControlButton(id) {
+			const target = document.getElementById(id);
+			if (!target) {
+				return;
+			}
+
+			const existing = window.__floatingControlObservers.get(id);
+			if (existing) {
+				existing.disconnect();
+			}
+
+			const observer = new MutationObserver(() => {
+				scheduleVisibilityUpdate();
+			});
+
+			observer.observe(target, {
+				attributes: true,
+				attributeFilter: ["class"],
+			});
+
+			window.__floatingControlObservers.set(id, observer);
+		}
+
+		function initFloatingControlVisibility() {
+			updateFloatingControlVisibility();
+			observeFloatingControlButton("floating-toc-btn");
+			observeFloatingControlButton("back-to-home-btn");
+			observeFloatingControlButton("back-to-top-btn");
+		}
+
+		function handleMermaidRenderStart() {
+			state.mermaidRendering = true;
+		}
+
+		function handleMermaidRenderDone() {
+			clearTimeout(state.mermaidRenderTimer);
+			state.mermaidRenderTimer = setTimeout(() => {
+				state.mermaidRendering = false;
+				updateFloatingControlVisibility();
+			}, 120);
+		}
+
+		if (!state.listenersRegistered) {
+			document.addEventListener(
+				"DOMContentLoaded",
+				initFloatingControlVisibility,
+			);
+			document.addEventListener(
+				"astro:page-load",
+				initFloatingControlVisibility,
+			);
+			window.addEventListener(
+				"mermaid:render:start",
+				handleMermaidRenderStart,
+			);
+			window.addEventListener(
+				"mermaid:render:done",
+				handleMermaidRenderDone,
+			);
+			state.listenersRegistered = true;
+		}
+
+		initFloatingControlVisibility();
+
+		function scheduleVisibilityUpdate() {
+			if (state.visibilityUpdateScheduled || state.mermaidRendering) {
+				return;
+			}
+			state.visibilityUpdateScheduled = true;
+			requestAnimationFrame(() => {
+				state.visibilityUpdateScheduled = false;
+				if (!state.mermaidRendering) {
+					updateFloatingControlVisibility();
+				}
+			});
+		}
+	})();
+</script>

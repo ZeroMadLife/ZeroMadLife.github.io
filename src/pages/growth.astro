@@ -1,14 +1,37 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
 const events = [
-  ['2026.07.24', '公开 HR Agent 第一阶段上线', '身份、项目、架构、职责、安全、测试、部署和路线图形成受控公开问答；真实引用与回执通过验证。'],
-  ['2026.07.22', 'SAGE V7 Beta 收口', 'Chat Harness 2.0 成为新会话默认 runtime profile，持续学习手册和发布入口完成。'],
-  ['2026.07.16', 'Knowledge 与 Practice 统一进入 Harness', '来源快照、提案、引用和受控工作区不再由孤立页面维护重复运行时。'],
-  ['2026.07.02', 'SAGE 仓库公开', 'Personal AI Learning Companion 形成公开仓库、产品截图、架构说明和 CI 门禁。'],
-  ['2026.05', 'Pico Agent 实验', '围绕代码 Agent 的上下文膨胀、任务恢复、工具副作用和结构化记忆建立第一套系统认识。'],
+	["2026.07.28", "SAGE RAG 取舍完成公开复盘", "冻结评测、Provider 选择、门禁与默认开关形成可追溯记录。"],
+	["2026.07.25", "Agent 评测边界成型", "把 Context、Memory、RAG、Harness 的控制正确性与能力表现拆开测量。"],
+	["2026.07.24", "SAGE 学习闭环公开", "Purpose、Explore、Knowledge、Practice、Evidence、Evolve 形成连续路径。"],
+	["2026.07.18", "公开知识库开始运行", "把本地学习和项目复盘整理为可检索、可引用的静态文章。"],
 ];
 ---
-<BaseLayout title="成长记录 — ZeroMadLife" description="SAGE、Agent 工程与能力迁移的公开时间线。">
-  <header class="page-head"><div class="column"><p class="eyebrow">Growth Log / 成长记录</p><h1 class="page-title">过程不是花絮。</h1><p class="description">这里保留可以公开验证的项目里程碑和学习轨迹。</p></div></header>
-  <section class="column" style="padding:56px 0 84px"><div class="timeline">{events.map(([date,title,text]) => <div class="timeline-item"><time>{date}</time><div><h3>{title}</h3><p>{text}</p></div></div>)}</div></section>
-</BaseLayout>
+
+<MainGridLayout title="成长记录" description="公开项目里程碑与学习轨迹。">
+	<script>
+		import("../scripts/right-sidebar-layout.js");
+	</script>
+	<section class="card-base rounded-(--radius-large) px-6 sm:px-9 py-7 mb-4">
+		<PageHeader title="成长记录" subtitle="过程不是花絮，它决定下一次从哪里继续。" />
+		<ol class="growth-timeline">
+			{events.map(([date, title, text]) => (
+				<li>
+					<time>{date}</time>
+					<div><h2>{title}</h2><p>{text}</p></div>
+				</li>
+			))}
+		</ol>
+	</section>
+</MainGridLayout>
+
+<style>
+	.growth-timeline { display: grid; gap: 0; }
+	.growth-timeline li { display: grid; grid-template-columns: 7rem 1fr; gap: 1.25rem; padding: 1.25rem 0; border-top: 1px solid var(--line-divider); }
+	.growth-timeline time { color: var(--primary); font-weight: 700; }
+	.growth-timeline h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: .35rem; }
+	.growth-timeline p { color: var(--text-50); line-height: 1.75; }
+	@media (max-width: 520px) { .growth-timeline li { grid-template-columns: 1fr; gap: .45rem; } }
+</style>

@@ -1,7 +1,7 @@
 ---
 title: "Chat Harness 2.0：Agent 长任务需要怎样的运行底座"
 description: "从事件流、上下文预算、持久化和工具审批出发，拆解一个可恢复 Agent Harness 的工程边界。"
-publishDate: 2026-07-22
+published: 2026-07-22
 category: agent
 tags: [Agent, Context, Runtime]
 featured: true
