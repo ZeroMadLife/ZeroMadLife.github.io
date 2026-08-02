@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, extname, join } from "node:path";
 import test from "node:test";
 import matter from "gray-matter";
@@ -154,17 +154,18 @@ test("the generated home page exposes the reference-theme controls", () => {
 		assert.match(html, new RegExp(signal));
 	}
 
-	const firstRegularPost = html.indexOf("指标变好了，但默认没开");
-	assert.ok(firstRegularPost > -1, "missing regular home-page article");
-	assert.ok(
-		html.indexOf("SAGE：让问题成为可以持续生长的证据") < firstRegularPost,
-		"featured SAGE article must lead regular posts",
-	);
-	assert.ok(
-		html.indexOf("Chat Harness 2.0：Agent 长任务需要怎样的运行底座") <
-			firstRegularPost,
-		"featured Harness article must lead regular posts",
-	);
+	const homeTitles = parse(html)
+		.querySelectorAll("#post-list-container a.font-bold")
+		.map((element) => element.text.trim())
+		.filter(Boolean);
+	assert.deepEqual(homeTitles.slice(0, 6), [
+		"Agent 越界不是一句提示词能拦住的",
+		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
+		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
+		"评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量",
+		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
+		"SAGE：让问题成为可以持续生长的证据",
+	]);
 });
 
 test("the home page avoids blocking fonts and eager hidden background images", async () => {
@@ -176,6 +177,27 @@ test("the home page avoids blocking fonts and eager hidden background images", a
 	assert.doesNotMatch(html, /ZenMaruGothic|Loli-|\.ttf/i);
 	assert.doesNotMatch(html, /<img[^>]+(?:desktop|mobile) wallpaper/i);
 	assert.ok(carouselHtml, "missing banner carousel markup");
+	assert.match(
+		html,
+		/<link(?=[^>]*rel="preload")(?=[^>]*as="image")(?=[^>]*href="\/assets\/desktop-banner\/fanren-mulan-character-01\.webp")(?=[^>]*fetchpriority="high")[^>]*>/,
+		"the first banner image must be discoverable from the document head",
+	);
+	const articleHtml = readFileSync(
+		join(dist, "posts", "agent-eval-harness-containment", "index.html"),
+		"utf8",
+	);
+	const articleBannerPreload = parse(articleHtml)
+		.querySelectorAll('link[rel="preload"][as="image"]')
+		.find(
+			(link) =>
+				link.getAttribute("href") ===
+				"/assets/desktop-banner/fanren-mulan-character-01.webp",
+		);
+	assert.equal(
+		articleBannerPreload?.getAttribute("media"),
+		"(min-width: 1280px)",
+		"hidden mobile article banners must not be preloaded",
+	);
 	assert.doesNotMatch(
 		carouselHtml,
 		/<img[^>]+\ssrc="\/assets\/desktop-banner\/fanren-mulan-character-\d{2}\.webp"/,

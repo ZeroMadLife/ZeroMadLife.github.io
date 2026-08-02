@@ -22,40 +22,10 @@ async function getRawSortedPosts() {
 	);
 
 	const sorted = allBlogPosts.sort((a, b) => {
-		// Featured posts lead the homepage while preserving pin priority.
-		if (a.data.featured && !b.data.featured) {
-			return -1;
-		}
-		if (!a.data.featured && b.data.featured) {
-			return 1;
-		}
-		// 首先按置顶状态排序，置顶文章在前
-		if (a.data.pinned && !b.data.pinned) {
-			return -1;
-		}
-		if (!a.data.pinned && b.data.pinned) {
-			return 1;
-		}
-
-		// 如果置顶状态相同，优先按 Priority 排序（数值越小越靠前）
-		if (a.data.pinned && b.data.pinned) {
-			const priorityA = a.data.priority;
-			const priorityB = b.data.priority;
-			if (priorityA !== undefined && priorityB !== undefined) {
-				if (priorityA !== priorityB) {
-					return priorityA - priorityB;
-				}
-			} else if (priorityA !== undefined) {
-				return -1;
-			} else if (priorityB !== undefined) {
-				return 1;
-			}
-		}
-
-		// 否则按发布日期排序
-		const dateA = new Date(a.data.published);
-		const dateB = new Date(b.data.published);
-		return dateA > dateB ? -1 : 1;
+		const dateDifference =
+			b.data.published.getTime() - a.data.published.getTime();
+		if (dateDifference !== 0) return dateDifference;
+		return a.id.localeCompare(b.id);
 	});
 	return sorted;
 }
@@ -63,14 +33,7 @@ async function getRawSortedPosts() {
 export const POSTS_ARCHIVE_PAGE_SIZE = 6;
 
 export async function getPostsByPublishedDate() {
-	const posts = await getCollection("posts", ({ data }) => isPublicPost(data));
-
-	return posts.sort((a, b) => {
-		const dateDifference =
-			b.data.published.getTime() - a.data.published.getTime();
-		if (dateDifference !== 0) return dateDifference;
-		return a.id.localeCompare(b.id);
-	});
+	return getRawSortedPosts();
 }
 
 export async function getSortedPosts() {

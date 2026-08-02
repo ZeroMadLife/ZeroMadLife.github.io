@@ -44,6 +44,27 @@ const keywords = siteConfig.keywords;
 // Favicons
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+
+const firstImage = (value?: string | string[]) =>
+	Array.isArray(value) ? value[0] : value;
+const bannerSource = siteConfig.banner.src;
+const isHomePage = Astro.url.pathname === "/";
+let desktopBannerPreload: string | undefined;
+let mobileBannerPreload: string | undefined;
+
+if (!siteConfig.banner.imageApi?.enable) {
+	if (
+		typeof bannerSource === "object" &&
+		bannerSource !== null &&
+		!Array.isArray(bannerSource)
+	) {
+		desktopBannerPreload = firstImage(bannerSource.desktop);
+		mobileBannerPreload = firstImage(bannerSource.mobile);
+	} else {
+		desktopBannerPreload = firstImage(bannerSource);
+		mobileBannerPreload = desktopBannerPreload;
+	}
+}
 ---
 
 <!-- SEO Meta Tags -->
@@ -81,6 +102,40 @@ const favicons: Favicon[] =
 <!-- Viewport and Generator -->
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Start the visible banner request before the browser reaches its body script. -->
+{
+	desktopBannerPreload && desktopBannerPreload === mobileBannerPreload ? (
+		<link
+			rel="preload"
+			as="image"
+			href={desktopBannerPreload}
+			media={isHomePage ? undefined : "(min-width: 1280px)"}
+			fetchpriority="high"
+		/>
+	) : (
+		<>
+			{desktopBannerPreload && (
+				<link
+					rel="preload"
+					as="image"
+					href={desktopBannerPreload}
+					media={isHomePage ? "(min-width: 768px)" : "(min-width: 1280px)"}
+					fetchpriority="high"
+				/>
+			)}
+			{isHomePage && mobileBannerPreload && (
+				<link
+					rel="preload"
+					as="image"
+					href={mobileBannerPreload}
+					media="(max-width: 767px)"
+					fetchpriority="high"
+				/>
+			)}
+		</>
+	)
+}
 
 <!-- Favicons -->
 {

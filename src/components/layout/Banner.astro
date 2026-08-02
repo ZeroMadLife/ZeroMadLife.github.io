@@ -249,14 +249,6 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 				rememberInitialFrame('banner-image-slot-mobile');
 				rememberInitialFrame('banner-image-slot-desktop');
 
-				// 随机起始索引（Swup 导航间保留，F5 刷新重置）
-				if (typeof window.__bannerRandomIndex === 'undefined') {
-					window.__bannerRandomIndex = {
-						mobile: mobileCount > 1 ? Math.floor(Math.random() * mobileCount) : 0,
-						desktop: desktopCount > 1 ? Math.floor(Math.random() * desktopCount) : 0
-					};
-				}
-
 				// 从 template 替换默认图片
 				function applyRandom(slotClass, tplClass, randomIndex) {
 					if (randomIndex === 0) return;
@@ -294,8 +286,8 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 
 				if (typeof window.__bannerCarouselIndex === 'undefined') {
 					window.__bannerCarouselIndex = {
-						mobile: window.__bannerRandomIndex ? window.__bannerRandomIndex.mobile : 0,
-						desktop: window.__bannerRandomIndex ? window.__bannerRandomIndex.desktop : 0
+						mobile: 0,
+						desktop: 0
 					};
 				}
 
@@ -655,15 +647,15 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 	<!-- 首页文字覆盖层 -->
 	{siteConfig.banner.homeText?.enable && (
 		<div class={`banner-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showTextOverlay ? "hidden" : ""}`}>
-			<div class="w-4/5 lg:w-3/4 text-center mb-0">
+			<div class="banner-copy text-center mb-0">
 				<div class="flex flex-col">
 					{overlayTitle && (
-						<h1 class="banner-title text-6xl lg:text-8xl text-white drop-shadow-lg mb-2 lg:mb-4">
+						<h1 class="banner-title text-white drop-shadow-lg mb-2 lg:mb-4">
 							{overlayTitle}
 						</h1>
 					)}
 					{overlaySubtitle && (
-						<h2 class="banner-subtitle text-xl lg:text-3xl text-white/90 drop-shadow-md">
+						<h2 class="banner-subtitle text-white/90 drop-shadow-md">
 							<span class="inline-block min-h-[1.2em]">
 								{typewriter && Array.isArray(overlaySubtitle) ? (
 									<TypewriterText
