@@ -7,6 +7,7 @@ const root = new URL("..", import.meta.url).pathname;
 const dist = join(root, "dist");
 
 const postSlugs = [
+  "agent-eval-harness-containment",
   "agent-evaluation-four-layers",
   "agent-memory-boundaries",
   "chat-harness-2",
