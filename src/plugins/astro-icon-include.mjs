@@ -80,15 +80,20 @@ function loadCollectionNames(collection) {
 	}
 }
 
-/**
- * @returns {Record<string, string[]>} astro-icon `include` map, e.g.
- *   { "material-symbols": ["home", "search"], "mdi": ["github"] }
- */
-export function buildIconInclude() {
+function loadCollection(collection) {
+	try {
+		const jsonPath = require.resolve(`@iconify-json/${collection}/icons.json`);
+		return JSON.parse(readFileSync(jsonPath, "utf8"));
+	} catch {
+		return null;
+	}
+}
+
+function collectIconReferences(files) {
 	const collectionSet = new Set(INSTALLED_COLLECTIONS);
 	const found = new Map(INSTALLED_COLLECTIONS.map((name) => [name, new Set()]));
 
-	for (const file of walk(SCAN_DIR)) {
+	for (const file of files) {
 		const content = readFileSync(file, "utf8");
 		for (const match of content.matchAll(ICON_REF_RE)) {
 			const [, prefix, name] = match;
@@ -97,6 +102,16 @@ export function buildIconInclude() {
 			}
 		}
 	}
+
+	return found;
+}
+
+/**
+ * @returns {Record<string, string[]>} astro-icon `include` map, e.g.
+ *   { "material-symbols": ["home", "search"], "mdi": ["github"] }
+ */
+export function buildIconInclude() {
+	const found = collectIconReferences(walk(SCAN_DIR));
 
 	/** @type {Record<string, string[]>} */
 	const include = {};
@@ -113,4 +128,67 @@ export function buildIconInclude() {
 		}
 	}
 	return include;
+}
+
+function buildLocalSvelteCollections() {
+	const svelteFiles = walk(SCAN_DIR).filter((file) => file.endsWith(".svelte"));
+	const found = collectIconReferences(svelteFiles);
+	const collections = {};
+
+	for (const [collection, names] of found) {
+		if (names.size === 0) continue;
+		const source = loadCollection(collection);
+		if (!source) continue;
+
+		const icons = {};
+		const aliases = {};
+		const addIcon = (name) => {
+			if (source.icons?.[name]) {
+				icons[name] = source.icons[name];
+				return;
+			}
+			const alias = source.aliases?.[name];
+			if (alias && !aliases[name]) {
+				aliases[name] = alias;
+				addIcon(alias.parent);
+			}
+		};
+
+		for (const name of names) addIcon(name);
+		if (Object.keys(icons).length === 0) continue;
+
+		collections[collection] = {
+			prefix: source.prefix,
+			icons,
+			...(Object.keys(aliases).length > 0 ? { aliases } : {}),
+			...(source.width ? { width: source.width } : {}),
+			...(source.height ? { height: source.height } : {}),
+		};
+	}
+
+	return collections;
+}
+
+export function localSvelteIcons() {
+	const moduleId = "virtual:local-svelte-icons";
+	const resolvedModuleId = `\0${moduleId}`;
+
+	return {
+		name: "local-svelte-icons",
+		resolveId(id) {
+			if (id === moduleId) return resolvedModuleId;
+		},
+		load(id) {
+			if (id === resolvedModuleId) {
+				return `export default ${JSON.stringify(buildLocalSvelteCollections())}`;
+			}
+		},
+		configureServer(server) {
+			server.watcher.on("change", (file) => {
+				if (!file.endsWith(".svelte")) return;
+				const module = server.moduleGraph.getModuleById(resolvedModuleId);
+				if (module) server.moduleGraph.invalidateModule(module);
+			});
+		},
+	};
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from "@iconify/svelte";
+import Icon from "@components/atoms/Icon/LocalIcon.svelte";
 
 import Key from "../../../../i18n/i18nKey";
 import { i18n } from "../../../../i18n/translation";
@@ -54,7 +54,10 @@ const containerClasses = {
 		aria-label={i18n(Key.musicPlayerShow)}
 	>
 		{#if isLoading}
-			<Icon icon="eos-icons:loading" class="text-white text-lg" />
+			<Icon
+				icon="material-symbols:progress-activity"
+				class="text-white text-lg animate-spin"
+			/>
 		{:else if isPlaying}
 			<div class="flex space-x-0.5">
 				<div
@@ -105,7 +108,10 @@ const containerClasses = {
 			class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
 		>
 			{#if isLoading}
-				<Icon icon="eos-icons:loading" class="text-white text-xl" />
+				<Icon
+					icon="material-symbols:progress-activity"
+					class="text-white text-xl animate-spin"
+				/>
 			{:else if isPlaying}
 				<Icon
 					icon="material-symbols:pause"

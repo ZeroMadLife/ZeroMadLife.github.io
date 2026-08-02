@@ -6,8 +6,8 @@
 
 | 文件 | 来源 | 作者/许可 | 获取日期 | 处理 |
 | --- | --- | --- | --- | --- |
-| `landscape-mountain.jpg` | https://images.unsplash.com/photo-1500534623283-312aade485b7 | Unsplash License | 2026-08-01 | Unsplash 图片服务压缩至 1920px |
-| `landscape-valley.jpg` | https://images.unsplash.com/photo-1501785888041-af3ef285b470 | Unsplash License | 2026-08-01 | Unsplash 图片服务压缩至 1920px |
-| `landscape-ridge.jpg` | https://images.unsplash.com/photo-1464822759023-fed622ff2c3b | Unsplash License | 2026-08-01 | Unsplash 图片服务压缩至 1920px |
+| `landscape-mountain.webp` | https://images.unsplash.com/photo-1500534623283-312aade485b7 | Unsplash License | 2026-08-01 | 裁切至 1920px，并转为 WebP |
+| `landscape-valley.webp` | https://images.unsplash.com/photo-1501785888041-af3ef285b470 | Unsplash License | 2026-08-01 | 裁切至 1920px，并转为 WebP |
+| `landscape-ridge.webp` | https://images.unsplash.com/photo-1464822759023-fed622ff2c3b | Unsplash License | 2026-08-01 | 裁切至 1920px，并转为 WebP |
 
 后续替换素材时，继续记录文件名、来源 URL、作者/许可证、下载日期和裁切或压缩方式。

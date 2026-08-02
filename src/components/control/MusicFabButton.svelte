@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from "@iconify/svelte";
+import Icon from "@components/atoms/Icon/LocalIcon.svelte";
 import { onDestroy, onMount } from "svelte";
 
 import type { MusicPlayerState } from "@/stores/musicPlayerStore";
@@ -22,7 +22,7 @@ const ariaLabel = $derived(
 );
 const statusIcon = $derived(
 	playerState.isLoading
-		? "svg-spinners:90-ring-with-bg"
+		? "material-symbols:progress-activity"
 		: "material-symbols:music-note-rounded",
 );
 
@@ -48,7 +48,7 @@ onDestroy(() => {
 	onclick={toggleControlCenter}
 >
 	<span class="music-fab__icon" aria-hidden="true">
-		<Icon icon={statusIcon} />
+		<Icon icon={statusIcon} class:animate-spin={playerState.isLoading} />
 	</span>
 
 	{#if playerState.isPlaying}

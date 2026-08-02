@@ -21,7 +21,7 @@ export const projectsData: Project[] = [
 		id: "knowledge-blog",
 		title: "Knowledge Blog",
 		description: "基于 Astro 与 Mizuki 的公开知识库，把本地 Markdown 文章发布成可检索、可归档的静态站点。",
-		image: "/assets/desktop-banner/landscape-valley.jpg",
+		image: "/assets/desktop-banner/landscape-valley.webp",
 		category: "web",
 		techStack: ["Astro", "Mizuki", "Markdown", "Nginx"],
 		status: "in-progress",

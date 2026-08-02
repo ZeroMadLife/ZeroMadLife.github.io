@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from "@iconify/svelte";
+import Icon from "@components/atoms/Icon/LocalIcon.svelte";
 
 interface Props {
 	isPlaying: boolean;
@@ -18,7 +18,10 @@ const { isPlaying, isLoading, onclick }: Props = $props();
 	{onclick}
 >
 	{#if isLoading}
-		<Icon icon="eos-icons:loading" class="text-xl" />
+		<Icon
+			icon="material-symbols:progress-activity"
+			class="text-xl animate-spin"
+		/>
 	{:else if isPlaying}
 		<Icon icon="material-symbols:pause" class="text-xl" />
 	{:else}

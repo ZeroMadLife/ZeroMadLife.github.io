@@ -110,14 +110,14 @@ export const siteConfig: SiteConfig = {
 		// 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播
 		src: {
 			desktop: [
-				"/assets/desktop-banner/landscape-mountain.jpg",
-				"/assets/desktop-banner/landscape-valley.jpg",
-				"/assets/desktop-banner/landscape-ridge.jpg",
+				"/assets/desktop-banner/landscape-mountain.webp",
+				"/assets/desktop-banner/landscape-valley.webp",
+				"/assets/desktop-banner/landscape-ridge.webp",
 			], // 桌面横幅图片
 			mobile: [
-				"/assets/desktop-banner/landscape-mountain.jpg",
-				"/assets/desktop-banner/landscape-valley.jpg",
-				"/assets/desktop-banner/landscape-ridge.jpg",
+				"/assets/desktop-banner/landscape-mountain.webp",
+				"/assets/desktop-banner/landscape-valley.webp",
+				"/assets/desktop-banner/landscape-ridge.webp",
 			], // 移动横幅图片
 		}, // 使用本地横幅图片
 
@@ -125,7 +125,7 @@ export const siteConfig: SiteConfig = {
 
 		carousel: {
 			enable: true,
-			interval: 3,
+			interval: 8,
 			switchable: true,
 		},
 

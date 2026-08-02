@@ -27,7 +27,10 @@ import {
 	permalinkConfig,
 	siteConfig,
 } from "./src/config/index.ts";
-import { buildIconInclude } from "./src/plugins/astro-icon-include.mjs";
+import {
+	buildIconInclude,
+	localSvelteIcons,
+} from "./src/plugins/astro-icon-include.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -54,43 +57,6 @@ export default defineConfig({
 			cssVariable: "--font-jetbrains-mono",
 			provider: fontProviders.fontsource(),
 			styles: ["normal", "italic"],
-		},
-		{
-			name: "ZenMaruGothic-Medium",
-			cssVariable: "--font-body",
-			provider: fontProviders.local(),
-			options: {
-				variants: [
-					{
-						src: ["./src/assets/fonts/ZenMaruGothic-Medium.ttf"],
-						weight: "500",
-						style: "normal",
-					},
-				],
-			},
-			// These variables are composed into --font-sans below. Keep their
-			// fallback lists empty; otherwise a system fallback after this Latin
-			// font prevents the following CJK font from ever being considered.
-			fallbacks: [],
-			optimizedFallbacks: false,
-		},
-		{
-			name: "Loli",
-			cssVariable: "--font-cjk",
-			provider: fontProviders.local(),
-			options: {
-				variants: [
-					{
-						src: ["./src/assets/fonts/loli.ttf"],
-						weight: "400",
-						style: "normal",
-					},
-				],
-			},
-			// The final system fallback belongs to --font-sans, not this partial
-			// CJK font stack.
-			fallbacks: [],
-			optimizedFallbacks: false,
 		},
 	],
 
@@ -305,11 +271,10 @@ export default defineConfig({
 		}),
 	},
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [localSvelteIcons(), tailwindcss()],
 		// 开发环境预打包优化：将常用依赖提前编译，避免首次页面加载时 on-demand 编译导致 8s+ 的等待
 		optimizeDeps: {
 			include: [
-				"@iconify/svelte",
 				"svelte",
 				"svelte/transition",
 				"svelte/easing",

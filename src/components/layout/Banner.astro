@@ -5,12 +5,10 @@
  * 轮播模式使用 Ken Burns + Crossfade 动画（参考 Firefly 实现）
  */
 
-import Image from "@components/atoms/Image/Image.astro";
 import TypewriterText from "@components/atoms/typewriter-text/TypewriterText.astro";
 import { Icon } from "astro-icon/components";
 import { siteConfig } from "../../config";
 import { BANNER_HEIGHT_EXTEND } from "../../constants/constants";
-import { getImageFormats, getImageQuality } from "../../utils/image-utils";
 
 interface Props {
 	// Banner 配置
@@ -70,10 +68,6 @@ const kbDurationMs = carouselIntervalMs + fadeMs;
 
 const hasBannerCredit = siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
-
-const bannerQuality = getImageQuality();
-const bannerMobileQuality = Math.round(bannerQuality * 0.9);
-const bannerFormats = getImageFormats();
 ---
 
 <div
@@ -91,71 +85,59 @@ const bannerFormats = getImageFormats();
 			data-carousel-interval={carouselIntervalMs}
 			data-fade-ms={fadeMs}
 		>
-			{/* 移动端：第一张图直接渲染，其余放入 template 延迟加载 */}
+			{/* 图片只保留 data-banner-src，脚本会按当前断点激活一张 */}
 			{mobileImages.length > 0 && (
 				<div class="banner-image-slot-mobile absolute inset-0 block md:hidden">
-					<Image
+					<img
 						alt="Mobile banner image 1"
 						class="object-cover h-full w-full"
-						src={mobileImages[0]}
-						position={siteConfig.banner.position}
-						widths={[640, 1024, 1536]}
-						sizes="100vw"
+						data-banner-src={mobileImages[0]}
+						style={`object-position: ${siteConfig.banner.position || "center"}`}
 						loading="eager"
+						decoding="async"
 						fetchpriority="high"
-						quality={bannerMobileQuality}
-						formats={bannerFormats}
 					/>
 				</div>
 			)}
 			{mobileImages.slice(1).map((src, i) => (
 				<template class="banner-tpl-mobile">
-					<Image
+					<img
 						alt={`Mobile banner image ${i + 2}`}
 						class="object-cover h-full w-full"
-						src={src}
-						position={siteConfig.banner.position}
-						widths={[640, 1024, 1536]}
-						sizes="100vw"
-						loading="eager"
-						fetchpriority="high"
-						quality={bannerMobileQuality}
-						formats={bannerFormats}
+						data-banner-src={src}
+						style={`object-position: ${siteConfig.banner.position || "center"}`}
+						loading="lazy"
+						decoding="async"
+						fetchpriority="low"
 					/>
 				</template>
 			))}
 
-			{/* 桌面端：第一张图直接渲染，其余放入 template 延迟加载 */}
+			{/* 桌面端同样只在脚本确认可见后加载 */}
 			{desktopImages.length > 0 && (
 				<div class="banner-image-slot-desktop absolute inset-0 hidden md:block">
-					<Image
+					<img
 						id="banner"
 						alt="Desktop banner image 1"
 						class="object-cover h-full w-full"
-						src={desktopImages[0]}
-						position={siteConfig.banner.position}
-						widths={[1024, 1536, 2048, 2560]}
-						sizes="100vw"
+						data-banner-src={desktopImages[0]}
+						style={`object-position: ${siteConfig.banner.position || "center"}`}
 						loading="eager"
+						decoding="async"
 						fetchpriority="high"
-						quality={bannerQuality}
-						formats={bannerFormats}
 					/>
 				</div>
 			)}
 			{desktopImages.slice(1).map((src, i) => (
 				<template class="banner-tpl-desktop">
-					<Image
+					<img
 						alt={`Desktop banner image ${i + 2}`}
 						class="object-cover h-full w-full"
-						src={src}
-						position={siteConfig.banner.position}
-						widths={[1024, 1536, 2048, 2560]}
-						sizes="100vw"
-						loading="eager"
-						fetchpriority="high"
-						quality={bannerQuality}
-						formats={bannerFormats}
+						data-banner-src={src}
+						style={`object-position: ${siteConfig.banner.position || "center"}`}
+						loading="lazy"
+						decoding="async"
+						fetchpriority="low"
 					/>
 				</template>
 			))}
@@ -197,33 +179,23 @@ const bannerFormats = getImageFormats();
 						return;
 					}
 
-					const desktopSrc = getRandomImage(desktopImages, "banner_desktop_index");
-					const mobileSrc = getRandomImage(mobileImages, "banner_mobile_index");
+						const isMobile = !window.matchMedia("(min-width: 768px)").matches;
+						const sourceImages = isMobile ? mobileImages : desktopImages;
+						const sourceKey = isMobile ? "banner_mobile_index" : "banner_desktop_index";
+						const source = getRandomImage(sourceImages, sourceKey);
 
-					if (mobileSrc) {
-						const mobileImg = document.createElement("img");
-						mobileImg.alt = "Mobile banner image of the blog";
-						mobileImg.className =
-							"block md:hidden object-cover h-full w-full transition duration-700 opacity-100";
-						mobileImg.src = mobileSrc;
-						mobileImg.loading = "eager";
-						mobileImg.fetchPriority = "high";
-						mobileImg.dataset.position = position;
-						container.appendChild(mobileImg);
-					}
-
-					if (desktopSrc) {
-						const desktopImg = document.createElement("img");
-						desktopImg.id = "banner";
-						desktopImg.alt = "Desktop banner image of the blog";
-						desktopImg.className =
-							"hidden md:block object-cover h-full w-full transition duration-700 opacity-100";
-						desktopImg.src = desktopSrc;
-						desktopImg.loading = "eager";
-						desktopImg.fetchPriority = "high";
-						desktopImg.dataset.position = position;
-						container.appendChild(desktopImg);
-					}
+						if (source) {
+							const image = document.createElement("img");
+							image.id = "banner";
+							image.alt = "Banner image of the blog";
+							image.className =
+								"object-cover h-full w-full transition duration-700 opacity-100";
+							image.src = source;
+							image.loading = "eager";
+							image.fetchPriority = "high";
+							image.dataset.position = position;
+							container.appendChild(image);
+						}
 				})();
 			</script>
 		</div>
@@ -297,10 +269,7 @@ const bannerFormats = getImageFormats();
 					slot.appendChild(tpl.content.cloneNode(true));
 				}
 
-				applyRandom('banner-image-slot-mobile', 'banner-tpl-mobile', window.__bannerRandomIndex.mobile);
-				applyRandom('banner-image-slot-desktop', 'banner-tpl-desktop', window.__bannerRandomIndex.desktop);
-
-				// 收集所有帧 HTML 字符串（仅首次）
+					// 收集所有帧 HTML 字符串（仅首次）
 				if (!window.__bannerCarouselFrames) window.__bannerCarouselFrames = {};
 
 				function collectFrames(slotClass, tplClass) {
@@ -331,13 +300,53 @@ const bannerFormats = getImageFormats();
 				}
 
 				// 断点检测（md = 768px）
-				function isSlotHiddenByBreakpoint(slot) {
-					var cl = slot.classList;
-					var isMd = window.matchMedia('(min-width: 768px)').matches;
+					function isSlotHiddenByBreakpoint(slot) {
+						var cl = slot.classList;
+						var isMd = window.matchMedia('(min-width: 768px)').matches;
 					if (cl.contains('md:hidden') && isMd) return true;
 					if (cl.contains('hidden') && !cl.contains('md:hidden') && !isMd) return true;
-					return false;
-				}
+						return false;
+					}
+
+					function activateLazyImages(slot, priority) {
+						if (!slot) return;
+						var images = slot.querySelectorAll('img[data-banner-src]');
+						for (var i = 0; i < images.length; i++) {
+							var image = images[i];
+							var src = image.dataset.bannerSrc;
+							if (!src) continue;
+							image.loading = priority === 'high' ? 'eager' : 'lazy';
+							image.fetchPriority = priority;
+							image.src = src;
+							delete image.dataset.bannerSrc;
+						}
+					}
+
+					function prepareSlot(slotClass, tplClass, type) {
+						var slot = container.querySelector('.' + slotClass);
+						if (!slot) return null;
+						if (slot.dataset.bannerPrepared !== 'true') {
+							applyRandom(slotClass, tplClass, window.__bannerCarouselIndex[type]);
+							slot.dataset.bannerPrepared = 'true';
+						}
+						activateLazyImages(slot, 'high');
+						return slot;
+					}
+
+					function prepareVisibleSlot() {
+						if (window.matchMedia('(min-width: 768px)').matches) {
+							return prepareSlot('banner-image-slot-desktop', 'banner-tpl-desktop', 'desktop');
+						}
+						return prepareSlot('banner-image-slot-mobile', 'banner-tpl-mobile', 'mobile');
+					}
+
+					function isBannerVisibleMode() {
+						var mode = 'banner';
+						try {
+							mode = localStorage.getItem('wallpaperMode') || 'banner';
+						} catch {}
+						return mode === 'banner' || mode === 'fullscreen';
+					}
 
 				// 给首张图启动 Ken Burns
 				function applyInitialKB(slotClass) {
@@ -398,10 +407,12 @@ const bannerFormats = getImageFormats();
 					var newSlot = document.createElement('div');
 					var baseClass = oldSlot.className.replace(/\bbanner-kb\b/g, '').trim();
 					newSlot.className = baseClass;
-					newSlot.style.opacity = '0';
-					newSlot.style.transition = 'opacity ' + FADE_MS + 'ms ease-in-out';
-					newSlot.innerHTML = frames[targetIndex];
-					oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
+						newSlot.style.opacity = '0';
+						newSlot.style.transition = 'opacity ' + FADE_MS + 'ms ease-in-out';
+						newSlot.innerHTML = frames[targetIndex];
+						newSlot.dataset.bannerPrepared = 'true';
+						oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
+						activateLazyImages(newSlot, 'low');
 
 					// 双 rAF：确保 opacity:0 已绘制，然后同时触发淡入 + Ken Burns
 					requestAnimationFrame(function() {
@@ -439,14 +450,19 @@ const bannerFormats = getImageFormats();
 				var touchStartY = 0;
 				var isSwiping = false;
 
-				function startCarousel(isFromResume) {
-					stopCarousel();
-					if (isPaused) return;
+					function startCarousel(isFromResume) {
+						stopCarousel();
+						if (isPaused || !isBannerVisibleMode()) return;
+						var visibleSlot = prepareVisibleSlot();
+						if (!visibleSlot) return;
+						var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-					if (!isFromResume) {
-						applyInitialKB('banner-image-slot-mobile');
-						applyInitialKB('banner-image-slot-desktop');
-					}
+						if (!isFromResume && !reduceMotion) {
+							applyInitialKB(visibleSlot.classList.contains('banner-image-slot-mobile')
+								? 'banner-image-slot-mobile'
+								: 'banner-image-slot-desktop');
+						}
+						if (reduceMotion) return;
 
 					intervalStartTime = Date.now();
 					timerId = setInterval(function() {
@@ -476,7 +492,7 @@ const bannerFormats = getImageFormats();
 					if (document.hidden) {
 						stopCarousel();
 						pauseKenBurns();
-					} else if (!isPaused) {
+						} else if (!isPaused && isBannerVisibleMode()) {
 						resumeKenBurns();
 						if (remainingTime > 0) {
 							resumeTimerId = setTimeout(function() {
@@ -489,8 +505,35 @@ const bannerFormats = getImageFormats();
 							startCarousel(true);
 						}
 					}
-				};
-				document.addEventListener('visibilitychange', visibilityHandler);
+					};
+					document.addEventListener('visibilitychange', visibilityHandler);
+
+					var isMobileViewport = !window.matchMedia('(min-width: 768px)').matches;
+					var resizeHandler = function() {
+						var nextIsMobile = !window.matchMedia('(min-width: 768px)').matches;
+						if (nextIsMobile === isMobileViewport) return;
+						isMobileViewport = nextIsMobile;
+						if (!isBannerVisibleMode()) return;
+						var visibleSlot = prepareVisibleSlot();
+						if (visibleSlot) {
+							applyInitialKB(nextIsMobile
+								? 'banner-image-slot-mobile'
+								: 'banner-image-slot-desktop');
+						}
+					};
+
+					var wallpaperModeHandler = function() {
+						if (!isBannerVisibleMode()) {
+							stopCarousel();
+							pauseKenBurns();
+							return;
+						}
+						resumeKenBurns();
+						startCarousel();
+					};
+
+					window.addEventListener('resize', resizeHandler, { passive: true });
+					window.addEventListener('wallpaper-mode-change', wallpaperModeHandler);
 
 				// 事件处理函数引用（用于清理）
 				var onTouchStart = function(e) {
@@ -594,7 +637,9 @@ const bannerFormats = getImageFormats();
 					stopCarousel();
 					remainingTime = 0;
 					intervalStartTime = 0;
-					document.removeEventListener('visibilitychange', visibilityHandler);
+						document.removeEventListener('visibilitychange', visibilityHandler);
+						window.removeEventListener('resize', resizeHandler);
+						window.removeEventListener('wallpaper-mode-change', wallpaperModeHandler);
 					if ('ontouchstart' in window) {
 						container.removeEventListener('touchstart', onTouchStart);
 						container.removeEventListener('touchmove', onTouchMove);

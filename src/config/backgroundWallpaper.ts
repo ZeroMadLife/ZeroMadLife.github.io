@@ -4,20 +4,20 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	enable: true,
 	src: {
 		desktop: [
-			"/assets/desktop-banner/landscape-mountain.jpg",
-			"/assets/desktop-banner/landscape-valley.jpg",
-			"/assets/desktop-banner/landscape-ridge.jpg",
+			"/assets/desktop-banner/landscape-mountain.webp",
+			"/assets/desktop-banner/landscape-valley.webp",
+			"/assets/desktop-banner/landscape-ridge.webp",
 		],
 		mobile: [
-			"/assets/desktop-banner/landscape-mountain.jpg",
-			"/assets/desktop-banner/landscape-valley.jpg",
-			"/assets/desktop-banner/landscape-ridge.jpg",
+			"/assets/desktop-banner/landscape-mountain.webp",
+			"/assets/desktop-banner/landscape-valley.webp",
+			"/assets/desktop-banner/landscape-ridge.webp",
 		],
 	},
 	position: "center",
 	carousel: {
 		enable: true,
-		interval: 5,
+		interval: 12,
 	},
 	zIndex: -1,
 	opacity: 0.8,
