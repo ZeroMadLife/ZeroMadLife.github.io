@@ -21,11 +21,6 @@ Harness 可以理解为“把模型接到现实世界上的运行底座”：它
 
 两起事故最值得 Agent 工程团队注意的，不是模型“想了什么”，而是系统“真的允许了什么”。
 
-<figure class="article-figure">
-  <img src="/images/posts/agent-eval-harness-containment.webp" alt="Agent 运行时由工具权限、网络出口、短期身份、独立监控和确定性停止共同形成安全边界" width="2048" height="1152" loading="eager" />
-  <figcaption>提示词只能影响模型判断；真正可执行的安全边界，要由权限、网络、身份、监控和停止机制共同完成。</figcaption>
-</figure>
-
 ## 先把两起事件分开
 
 | | OpenAI / Hugging Face 事件 | Anthropic 三起事件 |

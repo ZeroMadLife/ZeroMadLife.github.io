@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { basename, extname, join } from "node:path";
 import test from "node:test";
+import matter from "gray-matter";
+import { parse } from "node-html-parser";
 
 const root = new URL("..", import.meta.url).pathname;
 const dist = join(root, "dist");
+const postsDirectory = join(root, "src", "content", "posts");
 
 const postSlugs = [
   "agent-eval-harness-containment",
@@ -49,6 +52,37 @@ test("the public article URLs remain available", () => {
     assert.ok(
       existsSync(join(dist, "posts", slug, "index.html")),
       "missing /posts/" + slug + "/",
+    );
+  }
+});
+
+test("a post main image has one source and one rendered img", () => {
+  for (const file of readdirSync(postsDirectory)) {
+    if (!file.endsWith(".md")) continue;
+
+    const source = readFileSync(join(postsDirectory, file), "utf8");
+    const { data, content } = matter(source);
+    if (!data.image) continue;
+
+    assert.ok(
+      !content.includes(data.image),
+      `${file} repeats its frontmatter image in the Markdown body`,
+    );
+
+    if (data.publish !== true || data.visibility !== "public" || data.draft) {
+      continue;
+    }
+
+    const slug = basename(file, extname(file));
+    const html = readFileSync(join(dist, "posts", slug, "index.html"), "utf8");
+    const matchingImages = parse(html)
+      .querySelectorAll("img")
+      .filter((image) => image.getAttribute("src") === data.image);
+
+    assert.equal(
+      matchingImages.length,
+      1,
+      `${file} must render its frontmatter image exactly once`,
     );
   }
 });
@@ -243,8 +277,8 @@ test("public article tags use the compact canonical vocabulary", () => {
     "Graph Engineering",
   ]);
   const tags = new Set();
-  for (const file of readdirSync(join(root, "src/content/posts"))) {
-    const source = readFileSync(join(root, "src/content/posts", file), "utf8");
+  for (const file of readdirSync(postsDirectory)) {
+    const source = readFileSync(join(postsDirectory, file), "utf8");
     const match = source.match(/^tags:\s*\[([^\]]*)\]/m);
     assert.ok(match, `missing tags in ${file}`);
     for (const tag of match[1].split(",")) tags.add(tag.trim());

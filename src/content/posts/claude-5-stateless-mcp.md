@@ -19,11 +19,6 @@ publish: true
 
 一边在删提示词，一边在删协议状态。它们表面上是两件事，背后其实是同一个工程方向：**减少隐藏在全局上下文和连接里的隐式复杂性，把真正需要的约束放到更明确的位置。**
 
-<figure class="article-figure">
-  <img src="/images/posts/claude-5-stateless-mcp.webp" alt="逐渐精简的指令材料经过接口后，独立请求被均匀分发到三个服务模块" width="2048" height="1152" loading="eager" />
-  <figcaption>提示词在变薄，协议在变轻，但复杂性没有消失，而是被放回工具、接口、状态和验证系统。</figcaption>
-</figure>
-
 ## 先别急着得出“提示词没用了”
 
 Thariq 的原文标题是《The new rules of context engineering for Claude 5 models》。文章给出的数字很醒目：Claude Code 为新模型删除了 80% 以上的系统提示词，编码评测没有明显退步。
