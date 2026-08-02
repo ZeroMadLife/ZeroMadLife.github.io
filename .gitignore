@@ -13,6 +13,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local verification artifacts
+output/
+article-desktop-full.png
+
 
 # environment variables
 .env

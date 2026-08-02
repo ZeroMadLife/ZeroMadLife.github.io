@@ -3,6 +3,7 @@ import { i18n } from "@i18n/translation";
 
 import {
 	DEFAULT_SONG,
+	DEFAULT_VOLUME,
 	LOCAL_PLAYLIST,
 	SKIP_ERROR_DELAY,
 	STORAGE_KEY_VOLUME,
@@ -64,7 +65,7 @@ class MusicPlayerStore {
 			isLoading: false,
 			currentTime: 0,
 			duration: 0,
-			volume: 0.7,
+			volume: DEFAULT_VOLUME,
 			isMuted: false,
 			isShuffled: false,
 			isRepeating: 0,
@@ -250,7 +251,7 @@ class MusicPlayerStore {
 		const mode = musicPlayerConfig.mode ?? "meting";
 		const meting_api =
 			musicPlayerConfig.meting_api ??
-			"https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+			"https://meting.mysqil.com/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
 		const meting_id = musicPlayerConfig.id ?? "14164869977";
 		const meting_server = musicPlayerConfig.server ?? "netease";
 		const meting_type = musicPlayerConfig.type ?? "playlist";

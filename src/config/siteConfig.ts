@@ -110,14 +110,18 @@ export const siteConfig: SiteConfig = {
 		// 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播
 		src: {
 			desktop: [
-				"/assets/desktop-banner/landscape-mountain.webp",
-				"/assets/desktop-banner/landscape-valley.webp",
-				"/assets/desktop-banner/landscape-ridge.webp",
+				"/assets/desktop-banner/fanren-mulan-character-01.webp",
+				"/assets/desktop-banner/fanren-mulan-character-02.webp",
+				"/assets/desktop-banner/fanren-mulan-character-03.webp",
+				"/assets/desktop-banner/fanren-mulan-character-04.webp",
+				"/assets/desktop-banner/fanren-mulan-character-05.webp",
 			], // 桌面横幅图片
 			mobile: [
-				"/assets/desktop-banner/landscape-mountain.webp",
-				"/assets/desktop-banner/landscape-valley.webp",
-				"/assets/desktop-banner/landscape-ridge.webp",
+				"/assets/desktop-banner/fanren-mulan-character-01.webp",
+				"/assets/desktop-banner/fanren-mulan-character-02.webp",
+				"/assets/desktop-banner/fanren-mulan-character-03.webp",
+				"/assets/desktop-banner/fanren-mulan-character-04.webp",
+				"/assets/desktop-banner/fanren-mulan-character-05.webp",
 			], // 移动横幅图片
 		}, // 使用本地横幅图片
 
@@ -167,10 +171,10 @@ export const siteConfig: SiteConfig = {
 		},
 
 		credit: {
-			enable: false, // 显示横幅图片来源文本
+			enable: true, // 显示横幅图片来源文本
 
-			text: "Describe", // 要显示的来源文本
-			url: "", // （可选）原始艺术品或艺术家页面的 URL 链接
+			text: "《凡人修仙传》官方动画", // 要显示的来源文本
+			url: "https://www.bilibili.com/bangumi/play/ss28747", // （可选）原始艺术品或艺术家页面的 URL 链接
 		},
 
 		navbar: {

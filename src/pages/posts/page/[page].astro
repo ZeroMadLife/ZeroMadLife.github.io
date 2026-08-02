@@ -1,0 +1,19 @@
+---
+import PostsArchivePage from "@components/features/posts/PostsArchivePage.astro";
+import type { GetStaticPaths } from "astro";
+import {
+	POSTS_ARCHIVE_PAGE_SIZE,
+	getPostsByPublishedDate,
+} from "@utils/content-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPostsByPublishedDate();
+	return paginate(posts, { pageSize: POSTS_ARCHIVE_PAGE_SIZE }).filter(
+		(route) => route.params.page !== "1",
+	);
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<PostsArchivePage page={page} />

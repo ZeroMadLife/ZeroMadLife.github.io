@@ -48,7 +48,10 @@ onDestroy(() => {
 	onclick={toggleControlCenter}
 >
 	<span class="music-fab__icon" aria-hidden="true">
-		<Icon icon={statusIcon} class:animate-spin={playerState.isLoading} />
+		<Icon
+			icon={statusIcon}
+			class={playerState.isLoading ? "animate-spin" : undefined}
+		/>
 	</span>
 
 	{#if playerState.isPlaying}

@@ -1,55 +1,34 @@
 import type { Song } from "./types";
 
-export const STORAGE_KEY_VOLUME = "music-player-volume";
+export const STORAGE_KEY_VOLUME = "music-player-volume-v2";
 
-export const DEFAULT_VOLUME = 0.7;
+export const DEFAULT_VOLUME = 0.2;
 
 export const LOCAL_PLAYLIST: Song[] = [
 	{
-		id: 1,
-		title: "口笛で愛は歌えない",
-		artist: "Dazbee",
-		cover: "assets/music/cover/dazbee.webp",
-		url: "assets/music/url/dazbee.mp3",
+		id: 1465288702,
+		title: "不凡",
+		artist: "王铮亮",
+		cover:
+			"https://p1.music.126.net/lvfb_64QYmbib7ccHgDNJA==/109951165165604312.jpg",
+		url: "https://meting.mysqil.com/api?server=netease&type=url&id=1465288702",
 		duration: 0,
 	},
 	{
-		id: 2,
-		title: "ひとり上手",
-		artist: "Kaya",
-		cover: "assets/music/cover/hitori.webp",
-		url: "assets/music/url/hitori.mp3",
-		duration: 240,
-	},
-	{
-		id: 3,
-		title: "眩耀夜行",
-		artist: "ス리즈ブーケ",
-		cover: "assets/music/cover/xryx.webp",
-		url: "assets/music/url/xryx.mp3",
-		duration: 180,
-	},
-	{
-		id: 4,
-		title: "春雷の頃",
-		artist: "22/7",
-		cover: "assets/music/cover/cl.webp",
-		url: "assets/music/url/cl.mp3",
-		duration: 200,
+		id: 1971054019,
+		title: "归期",
+		artist: "钱润玉",
+		cover:
+			"https://p2.music.126.net/3vJuHBF8RZ6mQ6dhRZwOpQ==/109951169771325066.jpg",
+		url: "https://meting.mysqil.com/api?server=netease&type=url&id=1971054019",
+		duration: 0,
 	},
 ];
 
-export const DEFAULT_SONG: Song = {
-	title: "Sample Song",
-	artist: "Sample Artist",
-	cover: "/favicon/favicon.ico",
-	url: "",
-	duration: 0,
-	id: 0,
-};
+export const DEFAULT_SONG: Song = LOCAL_PLAYLIST[0];
 
 export const DEFAULT_METING_API =
-	"https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+	"https://meting.mysqil.com/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
 export const DEFAULT_METING_ID = "14164869977";
 export const DEFAULT_METING_SERVER = "netease";
 export const DEFAULT_METING_TYPE = "playlist";

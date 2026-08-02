@@ -4,8 +4,14 @@ import { i18n } from "@i18n/translation";
 import { initPostIdMap } from "@utils/permalink-utils";
 import { getCategoryUrl, getPostUrl } from "@utils/url-utils";
 
-export function isPublicPost(data: { visibility: string; publish: boolean; draft?: boolean }) {
-	return data.visibility === "public" && data.publish === true && data.draft !== true;
+export function isPublicPost(data: {
+	visibility: string;
+	publish: boolean;
+	draft?: boolean;
+}) {
+	return (
+		data.visibility === "public" && data.publish === true && data.draft !== true
+	);
 }
 
 // Retrieve only explicitly published posts. This predicate is shared by every
@@ -52,6 +58,19 @@ async function getRawSortedPosts() {
 		return dateA > dateB ? -1 : 1;
 	});
 	return sorted;
+}
+
+export const POSTS_ARCHIVE_PAGE_SIZE = 6;
+
+export async function getPostsByPublishedDate() {
+	const posts = await getCollection("posts", ({ data }) => isPublicPost(data));
+
+	return posts.sort((a, b) => {
+		const dateDifference =
+			b.data.published.getTime() - a.data.published.getTime();
+		if (dateDifference !== 0) return dateDifference;
+		return a.id.localeCompare(b.id);
+	});
 }
 
 export async function getSortedPosts() {

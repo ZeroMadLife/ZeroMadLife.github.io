@@ -1,20 +1,30 @@
 ---
-import PostCard from "@components/features/posts/PostCard.astro";
-import { PageHeader } from "@components/features/page-header";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "@utils/content-utils";
+import PostsArchivePage from "@components/features/posts/PostsArchivePage.astro";
+import {
+	POSTS_ARCHIVE_PAGE_SIZE,
+	getPostsByPublishedDate,
+} from "@utils/content-utils";
 
-const posts = await getSortedPosts();
+const posts = await getPostsByPublishedDate();
+const page = {
+	data: posts.slice(0, POSTS_ARCHIVE_PAGE_SIZE),
+	start: 0,
+	end: Math.min(POSTS_ARCHIVE_PAGE_SIZE, posts.length),
+	size: POSTS_ARCHIVE_PAGE_SIZE,
+	total: posts.length,
+	currentPage: 1,
+	lastPage: Math.max(1, Math.ceil(posts.length / POSTS_ARCHIVE_PAGE_SIZE)),
+	url: {
+		current: "/posts/",
+		prev: undefined,
+		next: posts.length > POSTS_ARCHIVE_PAGE_SIZE ? "/posts/page/2/" : undefined,
+		first: undefined,
+		last:
+			posts.length > POSTS_ARCHIVE_PAGE_SIZE
+				? `/posts/page/${Math.ceil(posts.length / POSTS_ARCHIVE_PAGE_SIZE)}/`
+				: undefined,
+	},
+};
 ---
 
-<MainGridLayout title="文章" description="全部公开文章，按精选优先与发布时间排序。">
-	<script>
-		import("../../scripts/right-sidebar-layout.js");
-	</script>
-	<div class="card-base rounded-(--radius-large) px-6 sm:px-9 py-7 mb-4">
-		<PageHeader title="文章" subtitle={`共 ${posts.length} 篇公开记录`} />
-		<div class="flex flex-col gap-4">
-			{posts.map((entry, index) => <PostCard entry={entry} style={`--i:${index};`} />)}
-		</div>
-	</div>
-</MainGridLayout>
+<PostsArchivePage page={page} />

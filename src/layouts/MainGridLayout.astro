@@ -7,10 +7,15 @@ import FullscreenWallpaper from "@components/misc/FullscreenWallpaper.astro";
 import Footer from "@components/organisms/footer/Footer.astro";
 import Navbar from "@components/organisms/navigation/Navbar.astro";
 import SideBar from "@components/widgets/sidebar/SideBar.astro";
+import MusicPlayer from "@components/widgets/music-player/MusicPlayer.svelte";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 
-import { fullscreenWallpaperConfig, siteConfig } from "../config";
+import {
+	fullscreenWallpaperConfig,
+	musicPlayerConfig,
+	siteConfig,
+} from "../config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_FULLSCREEN,
@@ -261,6 +266,9 @@ const defaultPostListLayout = siteConfig.postListLayout?.defaultMode || "list";
 			</div>
 
 			<FloatingControls headings={headings} />
+			{
+				musicPlayerConfig.enable && <MusicPlayer client:only="svelte" />
+			}
 		</div>
 	</div>
 

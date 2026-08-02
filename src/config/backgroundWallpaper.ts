@@ -4,14 +4,18 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	enable: true,
 	src: {
 		desktop: [
-			"/assets/desktop-banner/landscape-mountain.webp",
-			"/assets/desktop-banner/landscape-valley.webp",
-			"/assets/desktop-banner/landscape-ridge.webp",
+			"/assets/desktop-banner/fanren-mulan-character-01.webp",
+			"/assets/desktop-banner/fanren-mulan-character-02.webp",
+			"/assets/desktop-banner/fanren-mulan-character-03.webp",
+			"/assets/desktop-banner/fanren-mulan-character-04.webp",
+			"/assets/desktop-banner/fanren-mulan-character-05.webp",
 		],
 		mobile: [
-			"/assets/desktop-banner/landscape-mountain.webp",
-			"/assets/desktop-banner/landscape-valley.webp",
-			"/assets/desktop-banner/landscape-ridge.webp",
+			"/assets/desktop-banner/fanren-mulan-character-01.webp",
+			"/assets/desktop-banner/fanren-mulan-character-02.webp",
+			"/assets/desktop-banner/fanren-mulan-character-03.webp",
+			"/assets/desktop-banner/fanren-mulan-character-04.webp",
+			"/assets/desktop-banner/fanren-mulan-character-05.webp",
 		],
 	},
 	position: "center",
@@ -21,11 +25,11 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	},
 	zIndex: -1,
 	opacity: 0.8,
-	blur: 1,
+	blur: 0,
 	switchable: true,
 	overlay: {
 		opacity: 0.8, // 壁纸不透明度，0-1
-		blur: 1.5, // 背景模糊半径（px）
+		blur: 0, // 背景模糊半径（px）
 		cardOpacity: 0.8, // 卡片不透明度，0-1
 		switchable: {
 			opacity: true,

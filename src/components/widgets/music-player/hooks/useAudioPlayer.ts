@@ -1,4 +1,4 @@
-import { DEFAULT_SONG } from "../constants";
+import { DEFAULT_SONG, DEFAULT_VOLUME } from "../constants";
 import type { Song } from "../types";
 
 export interface AudioPlayerState {
@@ -18,7 +18,7 @@ export function createAudioPlayerState(): AudioPlayerState {
 		isPlaying: false,
 		currentTime: 0,
 		duration: 0,
-		volume: 0.7,
+		volume: DEFAULT_VOLUME,
 		isMuted: false,
 		isLoading: false,
 		currentSong: DEFAULT_SONG,

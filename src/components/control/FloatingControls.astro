@@ -1,10 +1,11 @@
 ---
 import type { MarkdownHeading } from "astro";
 
-import { siteConfig } from "../../config";
+import { musicPlayerConfig, siteConfig } from "../../config";
 import FloatingTOC from "../features/toc/FloatingTOC.astro";
 import BackToHome from "./BackToHome.astro";
 import BackToTop from "./BackToTop.astro";
+import MusicFabButton from "./MusicFabButton.svelte";
 
 interface Props {
 	headings?: MarkdownHeading[];
@@ -14,6 +15,15 @@ const { headings = [] } = Astro.props;
 ---
 
 <div class="floating-controls-container">
+	{
+		musicPlayerConfig.enable &&
+			musicPlayerConfig.showFloatingPlayer &&
+			musicPlayerConfig.floatingEntryMode === "fab" && (
+				<div class="floating-control-item" data-control-key="music">
+					<MusicFabButton client:only="svelte" />
+				</div>
+			)
+	}
 	{
 		siteConfig.toc.enable && siteConfig.toc.floating && (
 			<div class="floating-control-item" data-control-key="toc">

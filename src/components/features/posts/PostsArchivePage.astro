@@ -1,0 +1,30 @@
+---
+import PostsPagination from "@components/control/PostsPagination.astro";
+import { PageHeader } from "@components/features/page-header";
+import PostPage from "@components/features/posts/PostPage.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	page: Page<CollectionEntry<"posts">>;
+}
+
+const { page } = Astro.props;
+const firstItem = page.start + 1;
+const lastItem = page.start + page.data.length;
+---
+
+<MainGridLayout title="文章" description="全部公开文章，按发布时间倒序排列。">
+	<script>
+		import("../../../scripts/right-sidebar-layout.js");
+	</script>
+	<div class="card-base rounded-(--radius-large) px-6 sm:px-9 py-7 mb-4">
+		<PageHeader
+			title="文章"
+			subtitle={`共 ${page.total} 篇 · 第 ${page.currentPage}/${page.lastPage} 页 · ${firstItem}-${lastItem}`}
+		/>
+		<PostPage page={page} />
+		<PostsPagination class="mt-7" page={page} />
+	</div>
+</MainGridLayout>

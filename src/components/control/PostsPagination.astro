@@ -1,0 +1,73 @@
+---
+import type { Page } from "astro";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	page: Page;
+	class?: string;
+	style?: string;
+}
+
+const { page, style } = Astro.props;
+const className = Astro.props.class;
+
+const pageUrl = (pageNumber: number) =>
+	pageNumber === 1 ? "/posts/" : `/posts/page/${pageNumber}/`;
+const previousUrl = page.currentPage === 2 ? "/posts/" : page.url.prev;
+---
+
+<nav
+	aria-label="文章分页"
+	class:list={[className, "flex flex-row gap-3 justify-center"]}
+	style={style}
+>
+	<a
+		href={previousUrl || ""}
+		aria-label="上一页"
+		aria-disabled={previousUrl == undefined ? "true" : undefined}
+		class:list={[
+			"btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11",
+			{ disabled: previousUrl == undefined },
+		]}
+	>
+		<Icon name="material-symbols:chevron-left-rounded" class="text-[1.75rem]" />
+	</a>
+
+	<div
+		class="bg-(--card-bg) flex flex-row rounded-lg items-center text-neutral-700 dark:text-neutral-300 font-bold"
+	>
+		{
+			Array.from({ length: page.lastPage }, (_, index) => index + 1).map(
+				(pageNumber) =>
+					pageNumber === page.currentPage ? (
+						<span
+							aria-current="page"
+							class="h-11 w-11 rounded-lg bg-(--primary) flex items-center justify-center font-bold text-white dark:text-black/70"
+						>
+							{pageNumber}
+						</span>
+					) : (
+						<a
+							href={pageUrl(pageNumber)}
+							aria-label={`第 ${pageNumber} 页`}
+							class="btn-card w-11 h-11 rounded-lg overflow-hidden active:scale-[0.85]"
+						>
+							{pageNumber}
+						</a>
+					),
+			)
+		}
+	</div>
+
+	<a
+		href={page.url.next || ""}
+		aria-label="下一页"
+		aria-disabled={page.url.next == undefined ? "true" : undefined}
+		class:list={[
+			"btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11",
+			{ disabled: page.url.next == undefined },
+		]}
+	>
+		<Icon name="material-symbols:chevron-right-rounded" class="text-[1.75rem]" />
+	</a>
+</nav>
