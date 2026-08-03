@@ -4,17 +4,44 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
 
 const capabilities = [
-	["Chat Harness", "流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。"],
-	["Practice Engine", "文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。"],
-	["Knowledge Platform", "来源快照、Wiki 提案、混合检索、RRF 与稳定 citation。"],
-	["Runtime Extension", "Skills、MCP、受限子 Agent、Provider capability 与运行配置。"],
-	["Safety Boundary", "路径 containment、fresh-read、权限模式、危险操作审批与 Container Sandbox。"],
+	[
+		"Chat Harness",
+		"流式事件、durable timeline、checkpoint、context budget、artifact 与 usage。",
+	],
+	[
+		"Practice Engine",
+		"文件、搜索、Shell、Patch、Diff、Git、审批和真实运行证据。",
+	],
+	[
+		"Knowledge Platform",
+		"来源快照、Wiki 提案、混合检索、RRF 与稳定 citation。",
+	],
+	[
+		"Runtime Extension",
+		"Skills、MCP、受限子 Agent、Provider capability 与运行配置。",
+	],
+	[
+		"Safety Boundary",
+		"路径 containment、fresh-read、权限模式、危险操作审批与 Container Sandbox。",
+	],
 ];
 
 const shots = [
-	["/images/sage/assistant.webp", "SAGE Assistant 首页", "Assistant · 从目标开始"],
-	["/images/sage/knowledge.webp", "SAGE Knowledge 工作区", "Knowledge · 从来源到可引用知识"],
-	["/images/sage/practice.webp", "SAGE Practice 工作区", "Practice · 用真实执行验证理解"],
+	[
+		"/images/sage/assistant.webp",
+		"SAGE Assistant 首页",
+		"Assistant · 从目标开始",
+	],
+	[
+		"/images/sage/knowledge.webp",
+		"SAGE Knowledge 工作区",
+		"Knowledge · 从来源到可引用知识",
+	],
+	[
+		"/images/sage/practice.webp",
+		"SAGE Practice 工作区",
+		"Practice · 用真实执行验证理解",
+	],
 ];
 ---
 
@@ -22,23 +49,25 @@ const shots = [
 	<script>
 		import("../scripts/right-sidebar-layout.js");
 	</script>
-	<article class="card-base rounded-(--radius-large) overflow-hidden mb-4">
+	<article class="card-base text-90 rounded-(--radius-large) overflow-hidden mb-4">
 		<div class="px-6 sm:px-9 pt-8 pb-7">
 			<PageHeader title="SAGE" subtitle="Personal AI Learning Companion" />
-			<p class="sage-lead">让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
+			<p class="sage-lead text-75">让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。</p>
 			<div class="sage-actions">
 				<a href="https://sagecompanion.top" target="_blank" rel="noreferrer"><Icon name="material-symbols:open-in-new" />公开体验</a>
 				<a href="https://github.com/ZeroMadLife/sage-agent" target="_blank" rel="noreferrer"><Icon name="fa7-brands:github" />GitHub</a>
 			</div>
 		</div>
 
-		<img class="sage-cover" src="/images/sage/cover.webp" alt="SAGE 知识成长工作台界面" width="2048" height="1152" loading="eager" />
+		<a class="sage-cover-link" href="/images/sage/architecture.webp" data-fancybox="sage-architecture" data-no-swup="true">
+			<img class="sage-cover" src="/images/sage/architecture.webp" alt="SAGE Harness Engineering 核心框架架构图" width="2048" height="1152" loading="eager" />
+		</a>
 
 		<section class="sage-section">
 			<p class="sage-kicker">WHY SAGE</p>
 			<h2>不只是另一个聊天框</h2>
-			<p>SAGE 把对话、代码仓库、Markdown/Obsidian 知识、模型 Provider、Skills 和 MCP 工具组织进同一套 Chat Harness，让一次回答继续成为可追溯的知识、实践记录和下一步行动。</p>
-			<p>Coding 被设计成 Practice Engine；Knowledge 保存来源、提案、检索与引用。所有可能改变代码、长期知识或外部系统的操作都保留证据和控制点。</p>
+			<p class="text-75">SAGE 把对话、代码仓库、Markdown/Obsidian 知识、模型 Provider、Skills 和 MCP 工具组织进同一套 Chat Harness，让一次回答继续成为可追溯的知识、实践记录和下一步行动。</p>
+			<p class="text-75">Coding 被设计成 Practice Engine；Knowledge 保存来源、提案、检索与引用。所有可能改变代码、长期知识或外部系统的操作都保留证据和控制点。</p>
 		</section>
 
 		<section class="sage-section sage-shots">
@@ -48,7 +77,7 @@ const shots = [
 				{shots.map(([src, alt, caption]) => (
 					<figure>
 						<a href={src} data-fancybox="sage" data-caption={caption} data-no-swup="true"><img src={src} alt={alt} width="1440" height="900" loading="lazy" /></a>
-						<figcaption>{caption}</figcaption>
+						<figcaption class="text-50">{caption}</figcaption>
 					</figure>
 				))}
 			</div>
@@ -58,27 +87,28 @@ const shots = [
 			<p class="sage-kicker">CAPABILITIES</p>
 			<h2>工程底座</h2>
 			<div class="capability-list">
-				{capabilities.map(([name, text]) => <div><strong>{name}</strong><span>{text}</span></div>)}
+				{capabilities.map(([name, text]) => <div><strong>{name}</strong><span class="text-75">{text}</span></div>)}
 			</div>
 		</section>
 	</article>
 </MainGridLayout>
 
 <style>
-	.sage-lead { max-width: 46rem; font-size: 1.15rem; line-height: 1.8; color: var(--text-75); }
+	.sage-lead { max-width: 46rem; font-size: 1.15rem; line-height: 1.8; }
 	.sage-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
 	.sage-actions a { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.5rem; padding: 0 1rem; border-radius: .5rem; color: var(--primary); background: var(--btn-regular-bg); font-weight: 700; }
-	.sage-cover { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+	.sage-cover-link { display: block; background: #f7f3e8; }
+	.sage-cover { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; }
 	.sage-section { padding: 3.25rem 2.25rem; }
 	.sage-section + .sage-section { border-top: 1px solid var(--line-divider); }
 	.sage-kicker { color: var(--primary); font-size: .78rem; font-weight: 800; margin-bottom: .55rem; }
 	.sage-section h2 { font-size: 1.65rem; font-weight: 800; margin-bottom: 1.15rem; }
-	.sage-section > p:not(.sage-kicker) { max-width: 48rem; color: var(--text-75); line-height: 1.9; margin-top: .8rem; }
+	.sage-section > p:not(.sage-kicker) { max-width: 48rem; line-height: 1.9; margin-top: .8rem; }
 	.shot-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 	.shot-grid figure { min-width: 0; }
 	.shot-grid img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: .4rem; }
-	.shot-grid figcaption { font-size: .82rem; color: var(--text-50); margin-top: .6rem; }
+	.shot-grid figcaption { font-size: .82rem; margin-top: .6rem; }
 	.capability-list > div { display: grid; grid-template-columns: 9rem 1fr; gap: 1.25rem; padding: 1rem 0; border-top: 1px solid var(--line-divider); }
-	.capability-list span { color: var(--text-75); line-height: 1.75; }
+	.capability-list span { line-height: 1.75; }
 	@media (max-width: 720px) { .sage-section { padding: 2.25rem 1.5rem; } .shot-grid { grid-template-columns: 1fr; } .capability-list > div { grid-template-columns: 1fr; gap: .35rem; } }
 </style>

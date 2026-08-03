@@ -125,7 +125,7 @@ export const siteConfig: SiteConfig = {
 			], // 移动横幅图片
 		}, // 使用本地横幅图片
 
-		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
+		position: "top", // 人物横幅优先保留头部，避免宽屏裁切到面部
 
 		carousel: {
 			enable: true,

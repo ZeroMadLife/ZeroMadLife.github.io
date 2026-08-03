@@ -64,9 +64,23 @@ const carouselInterval = config.carousel?.interval || 5;
 
 // 样式配置
 const position = config.position || "center";
-const zIndex = config.zIndex || -1;
-const opacity = config.opacity || 0.8;
-const blurAmount = config.blur || 0;
+const zIndex = config.zIndex ?? 0;
+const opacity = config.opacity ?? 0.8;
+const blurAmount = config.blur ?? 0;
+const toCssUrl = (src: string | undefined) =>
+	`url(${JSON.stringify(src || "")})`;
+const fallbackDesktop = toCssUrl(
+	imageSources.desktop[0] || imageSources.mobile[0],
+);
+const fallbackMobile = toCssUrl(
+	imageSources.mobile[0] || imageSources.desktop[0],
+);
+const backgroundPosition =
+	position === "bottom"
+		? "center bottom"
+		: position === "top"
+			? "center top"
+			: "center center";
 const positionClass = (() => {
 	switch (position) {
 		case "top":
@@ -129,8 +143,26 @@ const positionClass = (() => {
 		}
 		})();
 		</script>
-	<div id="wallpaper-image-layer" class="relative h-full w-full"></div>
+	<div
+		id="wallpaper-image-layer"
+		class="relative h-full w-full"
+		style={`--wallpaper-fallback-desktop: ${fallbackDesktop}; --wallpaper-fallback-mobile: ${fallbackMobile}; background-position: ${backgroundPosition};`}
+	></div>
 </div>
+
+<style>
+	#wallpaper-image-layer {
+		background-image: var(--wallpaper-fallback-desktop);
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+
+	@media (max-width: 767px) {
+		#wallpaper-image-layer {
+			background-image: var(--wallpaper-fallback-mobile);
+		}
+	}
+</style>
 
 <script
 	is:inline

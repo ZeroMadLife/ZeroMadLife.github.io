@@ -125,6 +125,72 @@ test("the knowledge-blog entry routes are statically generated", () => {
 	}
 });
 
+test("the SAGE page uses the dev architecture artwork with theme-safe text", async () => {
+	const html = readFileSync(join(dist, "sage", "index.html"), "utf8");
+	const page = parse(html);
+	const cover = page.querySelector("img.sage-cover");
+
+	assert.equal(cover?.getAttribute("src"), "/images/sage/architecture.webp");
+	assert.equal(
+		cover?.getAttribute("alt"),
+		"SAGE Harness Engineering 核心框架架构图",
+	);
+	assert.equal(
+		cover?.parentNode.getAttribute("href"),
+		"/images/sage/architecture.webp",
+	);
+	assert.equal(
+		cover?.parentNode.getAttribute("data-fancybox"),
+		"sage-architecture",
+	);
+
+	const coverPath = join(dist, "images", "sage", "architecture.webp");
+	assert.ok(existsSync(coverPath), "missing SAGE architecture artwork");
+	const metadata = await sharp(coverPath).metadata();
+	assert.equal(metadata.format, "webp");
+	assert.equal(metadata.width, 2048);
+	assert.equal(metadata.height, 1152);
+
+	const source = readFileSync(join(root, "src", "pages", "sage.astro"), "utf8");
+	assert.doesNotMatch(source, /var\(--text-(?:50|75)\)/);
+	assert.match(source, /class="[^"]*sage-lead[^"]*text-75/);
+	assert.match(source, /class="[^"]*card-base[^"]*text-90/);
+});
+
+test("wallpaper modes preserve subject framing and a visible overlay fallback", () => {
+	const siteConfig = readFileSync(
+		join(root, "src", "config", "siteConfig.ts"),
+		"utf8",
+	);
+	const fullscreenConfig = readFileSync(
+		join(root, "src", "config", "backgroundWallpaper.ts"),
+		"utf8",
+	);
+	const bannerCss = readFileSync(
+		join(root, "src", "styles", "banner.css"),
+		"utf8",
+	);
+	const wallpaper = readFileSync(
+		join(root, "src", "components", "misc", "FullscreenWallpaper.astro"),
+		"utf8",
+	);
+
+	assert.match(siteConfig, /banner:\s*\{[\s\S]*?position:\s*"top"/);
+	assert.match(fullscreenConfig, /position:\s*"top"/);
+	assert.match(fullscreenConfig, /zIndex:\s*0/);
+	assert.doesNotMatch(
+		bannerCss,
+		/object-position:\s*center center\s*!important/,
+	);
+	assert.match(wallpaper, /--wallpaper-fallback-desktop/);
+	assert.match(wallpaper, /--wallpaper-fallback-mobile/);
+	assert.match(
+		wallpaper,
+		/background-image:\s*var\(--wallpaper-fallback-desktop\)/,
+	);
+	assert.match(wallpaper, /const zIndex = config\.zIndex \?\? 0/);
+});
+
 test("the article archive is paginated and ordered by published date", () => {
 	const firstPage = readFileSync(join(dist, "posts", "index.html"), "utf8");
 	const secondPage = readFileSync(
