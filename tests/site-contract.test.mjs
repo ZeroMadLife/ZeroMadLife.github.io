@@ -258,6 +258,10 @@ test("the generated home page exposes the reference-theme controls", () => {
 
 test("the home page avoids blocking fonts and eager hidden background images", async () => {
 	const html = readFileSync(join(dist, "index.html"), "utf8");
+	const bannerSource = readFileSync(
+		join(root, "src", "components", "layout", "Banner.astro"),
+		"utf8",
+	);
 	const carouselHtml = html.match(
 		/id="banner-carousel"[\s\S]*?<!-- Ken Burns/,
 	)?.[0];
@@ -297,6 +301,18 @@ test("the home page avoids blocking fonts and eager hidden background images", a
 	assert.doesNotMatch(
 		html,
 		/assets\/desktop-banner\/fanren-mulan-character-\d{2}\.(?:jpg|png)/,
+	);
+	assert.match(
+		bannerSource,
+		/if \(!oldImage \|\| !oldImage\.complete \|\| oldImage\.naturalWidth === 0\) return;/,
+	);
+	assert.match(
+		bannerSource,
+		/nextImage\.addEventListener\('load', beginCrossfade, \{ once: true \}\)/,
+	);
+	assert.match(
+		bannerSource,
+		/nextImage\.addEventListener\('error', cancelCrossfade, \{ once: true \}\)/,
 	);
 
 	const banners = [

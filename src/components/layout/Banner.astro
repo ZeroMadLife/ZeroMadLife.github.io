@@ -389,6 +389,8 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 					var oldSlot = container.querySelector('.' + slotClass);
 					if (!oldSlot) return;
 					if (isSlotHiddenByBreakpoint(oldSlot)) return;
+					var oldImage = oldSlot.querySelector('img');
+					if (!oldImage || !oldImage.complete || oldImage.naturalWidth === 0) return;
 
 					isCrossfading[type] = true;
 					window.__bannerCarouselIndex[type] = targetIndex;
@@ -399,27 +401,57 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 					var newSlot = document.createElement('div');
 					var baseClass = oldSlot.className.replace(/\bbanner-kb\b/g, '').trim();
 					newSlot.className = baseClass;
-						newSlot.style.opacity = '0';
-						newSlot.style.transition = 'opacity ' + FADE_MS + 'ms ease-in-out';
-						newSlot.innerHTML = frames[targetIndex];
-						newSlot.dataset.bannerPrepared = 'true';
-						oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
-						activateLazyImages(newSlot, 'low');
+					newSlot.style.opacity = '0';
+					newSlot.style.transition = 'opacity ' + FADE_MS + 'ms ease-in-out';
+					newSlot.innerHTML = frames[targetIndex];
+					newSlot.dataset.bannerPrepared = 'true';
+					oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
+					activateLazyImages(newSlot, 'low');
 
-					// 双 rAF：确保 opacity:0 已绘制，然后同时触发淡入 + Ken Burns
-					requestAnimationFrame(function() {
-						requestAnimationFrame(function() {
-							newSlot.style.opacity = '1';
-							newSlot.classList.add('banner-kb');
-						});
-					});
-
-					// 淡入完成后：移除旧层，清理 transition，释放锁
-					setTimeout(function() {
-						if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
-						newSlot.style.transition = '';
+					var nextImage = newSlot.querySelector('img');
+					if (!nextImage) {
+						newSlot.remove();
 						isCrossfading[type] = false;
-					}, FADE_MS + 50);
+						return;
+					}
+					var transitionSettled = false;
+
+					function cancelCrossfade() {
+						if (transitionSettled) return;
+						transitionSettled = true;
+						if (newSlot.parentNode) newSlot.parentNode.removeChild(newSlot);
+						isCrossfading[type] = false;
+					}
+
+					function beginCrossfade() {
+						if (transitionSettled) return;
+						transitionSettled = true;
+						if (!newSlot.isConnected) {
+							isCrossfading[type] = false;
+							return;
+						}
+
+						// 新图解码成功后才淡出旧图，弱网时始终保留可见画面。
+						requestAnimationFrame(function() {
+							requestAnimationFrame(function() {
+								newSlot.style.opacity = '1';
+								newSlot.classList.add('banner-kb');
+							});
+						});
+
+						setTimeout(function() {
+							if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
+							newSlot.style.transition = '';
+							isCrossfading[type] = false;
+						}, FADE_MS + 50);
+					}
+
+					nextImage.addEventListener('load', beginCrossfade, { once: true });
+					nextImage.addEventListener('error', cancelCrossfade, { once: true });
+					if (nextImage.complete) {
+						if (nextImage.naturalWidth > 0) beginCrossfade();
+						else cancelCrossfade();
+					}
 				}
 
 				// 自动轮播用的 crossfade（前进到下一张）
