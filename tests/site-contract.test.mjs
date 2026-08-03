@@ -314,6 +314,7 @@ test("the home page avoids blocking fonts and eager hidden background images", a
 		bannerSource,
 		/nextImage\.addEventListener\('error', cancelCrossfade, \{ once: true \}\)/,
 	);
+	assert.match(bannerSource, /transform-origin:\s*center top/);
 
 	const banners = [
 		"fanren-mulan-character-01.webp",
