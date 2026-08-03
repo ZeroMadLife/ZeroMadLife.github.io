@@ -15,6 +15,7 @@ const postsCollection = defineCollection({
 		publish: z.literal(true),
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
+		imageAlt: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
 		featured: z.boolean().optional().default(false),
