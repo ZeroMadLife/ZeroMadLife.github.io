@@ -49,6 +49,8 @@ class MusicPlayerStore {
 	private audio: HTMLAudioElement | null = null;
 	private state: MusicPlayerState;
 	private isInitialized = false;
+	private consecutiveLoadErrors = 0;
+	private errorRetryTimer: ReturnType<typeof setTimeout> | null = null;
 	private unregisterInteraction: (() => void) | undefined;
 	private listeners = new Set<(state: MusicPlayerState) => void>();
 
@@ -114,6 +116,7 @@ class MusicPlayerStore {
 		}
 
 		this.audio = new Audio();
+		this.audio.preload = "none";
 		this.setupAudioListeners();
 		this.loadVolumeFromStorage();
 		this.registerInteractionHandler();
@@ -177,17 +180,27 @@ class MusicPlayerStore {
 
 	private handleAudioError(): void {
 		this.state.isLoading = false;
+		this.state.isPlaying = false;
+		this.consecutiveLoadErrors += 1;
 		this.showError(i18n(Key.musicPlayerErrorSong));
 
-		if (this.state.playlist.length > 1) {
-			setTimeout(() => this.next(true), SKIP_ERROR_DELAY);
-		} else if (this.state.playlist.length <= 1) {
+		if (
+			this.state.playlist.length === 0 ||
+			this.consecutiveLoadErrors >= this.state.playlist.length
+		) {
+			this.state.willAutoPlay = false;
 			this.showError(i18n(Key.musicPlayerErrorEmpty));
+		} else {
+			this.errorRetryTimer = setTimeout(() => {
+				this.errorRetryTimer = null;
+				this.advanceAfterError();
+			}, SKIP_ERROR_DELAY);
 		}
 		this.broadcastState();
 	}
 
 	private handleAudioLoaded(): void {
+		this.resetLoadErrorCycle();
 		this.state.isLoading = false;
 		if (this.audio?.duration && this.audio.duration > 1) {
 			this.state.duration = Math.floor(this.audio.duration);
@@ -354,21 +367,36 @@ class MusicPlayerStore {
 		}
 		if (song.url !== this.state.currentSong.url) {
 			this.state.currentSong = { ...song };
-			if (song.url) {
-				this.state.isLoading = true;
-			} else {
-				this.state.isLoading = false;
-			}
 		}
+		this.state.isLoading = autoPlay;
 		this.state.willAutoPlay = autoPlay;
 		if (this.audio) {
 			if (this.audio.src && song.url) {
 				this.audio.src = "";
 			}
 			this.audio.src = getAssetPath(song.url);
-			this.audio.load();
+			if (autoPlay) {
+				this.audio.load();
+			}
 		}
 		this.broadcastState();
+	}
+
+	private resetLoadErrorCycle(): void {
+		this.consecutiveLoadErrors = 0;
+		if (this.errorRetryTimer !== null) {
+			clearTimeout(this.errorRetryTimer);
+			this.errorRetryTimer = null;
+		}
+	}
+
+	private advanceAfterError(): void {
+		if (this.state.playlist.length <= 1) {
+			return;
+		}
+		const newIndex = (this.state.currentIndex + 1) % this.state.playlist.length;
+		this.state.currentIndex = newIndex;
+		this.loadSong(this.state.playlist[newIndex], true);
 	}
 
 	private showError(message: string): void {
@@ -393,6 +421,7 @@ class MusicPlayerStore {
 		if (this.state.isPlaying) {
 			this.audio.pause();
 		} else {
+			this.resetLoadErrorCycle();
 			this.audio.play().catch(() => {});
 		}
 	}
@@ -401,6 +430,7 @@ class MusicPlayerStore {
 		if (!this.audio || !this.state.currentSong.url) {
 			return;
 		}
+		this.resetLoadErrorCycle();
 		this.audio.play().catch(() => {});
 	}
 
@@ -416,6 +446,7 @@ class MusicPlayerStore {
 			return;
 		}
 
+		this.resetLoadErrorCycle();
 		let newIndex: number;
 		if (this.state.isShuffled) {
 			do {
@@ -439,6 +470,7 @@ class MusicPlayerStore {
 		if (this.state.playlist.length <= 1) {
 			return;
 		}
+		this.resetLoadErrorCycle();
 		const newIndex =
 			this.state.currentIndex > 0
 				? this.state.currentIndex - 1
@@ -451,6 +483,7 @@ class MusicPlayerStore {
 		if (index < 0 || index >= this.state.playlist.length) {
 			return;
 		}
+		this.resetLoadErrorCycle();
 		this.state.currentIndex = index;
 		this.loadSong(this.state.playlist[index], true);
 	}
@@ -576,6 +609,7 @@ class MusicPlayerStore {
 	}
 
 	destroy(): void {
+		this.resetLoadErrorCycle();
 		if (this.unregisterInteraction) {
 			this.unregisterInteraction();
 		}

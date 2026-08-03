@@ -46,6 +46,7 @@ const shots = [
 ---
 
 <MainGridLayout title="SAGE" description="让目标、知识、实践与证据在同一个可恢复的工作台里持续生长。">
+	<link slot="head" rel="preload" as="image" href="/images/sage/architecture.webp" fetchpriority="high" />
 	<script>
 		import("../scripts/right-sidebar-layout.js");
 	</script>
@@ -60,7 +61,7 @@ const shots = [
 		</div>
 
 		<a class="sage-cover-link" href="/images/sage/architecture.webp" data-fancybox="sage-architecture" data-no-swup="true">
-			<img class="sage-cover" src="/images/sage/architecture.webp" alt="SAGE Harness Engineering 核心框架架构图" width="2048" height="1152" loading="eager" />
+			<img class="sage-cover" src="/images/sage/architecture.webp" alt="SAGE Harness Engineering 核心框架架构图" width="2048" height="1152" loading="eager" decoding="async" fetchpriority="high" />
 		</a>
 
 		<section class="sage-section">

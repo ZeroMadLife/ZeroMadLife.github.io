@@ -129,6 +129,11 @@ test("the SAGE page uses the dev architecture artwork with theme-safe text", asy
 	const html = readFileSync(join(dist, "sage", "index.html"), "utf8");
 	const page = parse(html);
 	const cover = page.querySelector("img.sage-cover");
+	const coverPreload = page
+		.querySelectorAll('link[rel="preload"][as="image"]')
+		.find(
+			(link) => link.getAttribute("href") === "/images/sage/architecture.webp",
+		);
 
 	assert.equal(cover?.getAttribute("src"), "/images/sage/architecture.webp");
 	assert.equal(
@@ -143,6 +148,8 @@ test("the SAGE page uses the dev architecture artwork with theme-safe text", asy
 		cover?.parentNode.getAttribute("data-fancybox"),
 		"sage-architecture",
 	);
+	assert.equal(cover?.getAttribute("fetchpriority"), "high");
+	assert.equal(coverPreload?.getAttribute("fetchpriority"), "high");
 
 	const coverPath = join(dist, "images", "sage", "architecture.webp");
 	assert.ok(existsSync(coverPath), "missing SAGE architecture artwork");
@@ -355,6 +362,26 @@ test("the music player exposes only the selected Fanren tracks", () => {
 		),
 		"utf8",
 	);
+	const store = readFileSync(
+		join(root, "src", "stores", "musicPlayerStore.ts"),
+		"utf8",
+	);
+	const cover = readFileSync(
+		join(
+			root,
+			"src",
+			"components",
+			"widgets",
+			"music-player",
+			"atoms",
+			"CoverImage.svelte",
+		),
+		"utf8",
+	);
+	const profile = readFileSync(
+		join(root, "src", "components", "widgets", "profile", "Profile.astro"),
+		"utf8",
+	);
 
 	assert.match(config, /enable:\s*true/);
 	assert.match(config, /showFloatingPlayer:\s*true/);
@@ -375,6 +402,14 @@ test("the music player exposes only the selected Fanren tracks", () => {
 	assert.match(floatingControls, /MusicFabButton client:only="svelte"/);
 	assert.match(floatingControls, /data-control-key="music"/);
 	assert.match(player, /music-player-fab-anchor/);
+	assert.match(store, /this\.audio\.preload\s*=\s*"none"/);
+	assert.match(store, /if \(autoPlay\) \{\s*this\.audio\.load\(\);/);
+	assert.match(
+		store,
+		/consecutiveLoadErrors\s*>=\s*this\.state\.playlist\.length/,
+	);
+	assert.doesNotMatch(cover, /fetchpriority="high"/);
+	assert.doesNotMatch(profile, /fetchpriority="high"/);
 });
 
 test("interactive icons are bundled locally without Iconify network fallbacks", () => {
