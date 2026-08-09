@@ -11,6 +11,7 @@ const dist = join(root, "dist");
 const postsDirectory = join(root, "src", "content", "posts");
 
 const postSlugs = [
+	"agent-auto-mode-permission-gate",
 	"agent-environment-interface-misalignment",
 	"agent-eval-harness-containment",
 	"agent-evaluation-four-layers",
@@ -211,14 +212,15 @@ test("the article archive is paginated and ordered by published date", () => {
 			.filter(Boolean);
 
 	assert.deepEqual(archiveTitles(firstPage), [
+		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
 		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
 		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 		"评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量",
-		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
 	]);
 	assert.deepEqual(archiveTitles(secondPage), [
+		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
 		"SAGE：让问题成为可以持续生长的证据",
 		"Chat Harness 2.0：Agent 长任务需要怎样的运行底座",
 		"Agent Memory 的工程边界：工作记忆、长期记忆与知识",
@@ -247,12 +249,12 @@ test("the generated home page exposes the reference-theme controls", () => {
 		.map((element) => element.text.trim())
 		.filter(Boolean);
 	assert.deepEqual(homeTitles.slice(0, 6), [
+		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
 		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
 		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 		"评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量",
-		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
 	]);
 });
 
