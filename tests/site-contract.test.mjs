@@ -11,6 +11,7 @@ const dist = join(root, "dist");
 const postsDirectory = join(root, "src", "content", "posts");
 
 const postSlugs = [
+	"agent-contribution-governance-gates",
 	"deerflow-open-source-contribution-execution-identity",
 	"agent-auto-mode-permission-gate",
 	"agent-environment-interface-misalignment",
@@ -113,6 +114,7 @@ test("the knowledge-blog entry routes are statically generated", () => {
 		"skills/index.html",
 		"posts/index.html",
 		"posts/page/2/index.html",
+		"posts/page/3/index.html",
 		"sage/index.html",
 		"growth/index.html",
 		"category/agent/index.html",
@@ -206,6 +208,10 @@ test("the article archive is paginated and ordered by published date", () => {
 		join(dist, "posts", "page", "2", "index.html"),
 		"utf8",
 	);
+	const thirdPage = readFileSync(
+		join(dist, "posts", "page", "3", "index.html"),
+		"utf8",
+	);
 	const archiveTitles = (html) =>
 		parse(html)
 			.querySelectorAll("#post-list-container a.font-bold")
@@ -213,24 +219,44 @@ test("the article archive is paginated and ordered by published date", () => {
 			.filter(Boolean);
 
 	assert.deepEqual(archiveTitles(firstPage), [
+		"Agent 贡献不该只靠一份说明书：把规则变成合并门禁",
 		"一次 DeerFlow 开源贡献：锁住字典之后，任务为什么还是串了",
 		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
 		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
-		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 	]);
 	assert.deepEqual(archiveTitles(secondPage), [
+		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 		"评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量",
 		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
 		"SAGE：让问题成为可以持续生长的证据",
 		"Chat Harness 2.0：Agent 长任务需要怎样的运行底座",
 		"Agent Memory 的工程边界：工作记忆、长期记忆与知识",
+	]);
+	assert.deepEqual(archiveTitles(thirdPage), [
 		"从 Java 后端到 Agent 工程：哪些能力可以直接迁移",
 	]);
 	assert.match(firstPage, /href="\/posts\/page\/2\/"/);
 	assert.match(secondPage, /href="\/posts\/"/);
+	assert.match(secondPage, /href="\/posts\/page\/3\/"/);
+	assert.match(thirdPage, /href="\/posts\/page\/2\/"/);
 	assert.equal(existsSync(join(dist, "posts", "page", "1")), false);
+});
+
+test("the Agent contribution article uses the validated 16:9 main image", async () => {
+	const imagePath = join(
+		root,
+		"public",
+		"images",
+		"posts",
+		"agent-contribution-governance-gates.webp",
+	);
+	assert.ok(existsSync(imagePath), "missing Agent contribution artwork");
+	const metadata = await sharp(imagePath).metadata();
+	assert.equal(metadata.format, "webp");
+	assert.equal(metadata.width, 2048);
+	assert.equal(metadata.height, 1152);
 });
 
 test("the generated home page exposes the reference-theme controls", () => {
@@ -251,12 +277,12 @@ test("the generated home page exposes the reference-theme controls", () => {
 		.map((element) => element.text.trim())
 		.filter(Boolean);
 	assert.deepEqual(homeTitles.slice(0, 6), [
+		"Agent 贡献不该只靠一份说明书：把规则变成合并门禁",
 		"一次 DeerFlow 开源贡献：锁住字典之后，任务为什么还是串了",
 		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
 		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
-		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 	]);
 });
 
