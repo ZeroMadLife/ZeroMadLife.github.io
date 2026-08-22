@@ -11,6 +11,7 @@ const dist = join(root, "dist");
 const postsDirectory = join(root, "src", "content", "posts");
 
 const postSlugs = [
+	"agent-browser-skills-files-production-loop",
 	"agent-contribution-governance-gates",
 	"deerflow-open-source-contribution-execution-identity",
 	"agent-auto-mode-permission-gate",
@@ -219,22 +220,23 @@ test("the article archive is paginated and ordered by published date", () => {
 			.filter(Boolean);
 
 	assert.deepEqual(archiveTitles(firstPage), [
+		"Agent 生产化的最小闭环：浏览器、Skill 与文件如何接起来",
 		"Agent 贡献不该只靠一份说明书：把规则变成合并门禁",
 		"一次 DeerFlow 开源贡献：锁住字典之后，任务为什么还是串了",
 		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
-		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
 	]);
 	assert.deepEqual(archiveTitles(secondPage), [
+		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
 		"指标变好了，但默认没开：SAGE RAG 的几个工程取舍",
 		"评测不是打分：SAGE 的 Context、Memory、RAG、Harness 怎么量",
 		"Loop 没有死：从 DeerFlow 到 SAGE 理解 Graph Engineering",
 		"SAGE：让问题成为可以持续生长的证据",
 		"Chat Harness 2.0：Agent 长任务需要怎样的运行底座",
-		"Agent Memory 的工程边界：工作记忆、长期记忆与知识",
 	]);
 	assert.deepEqual(archiveTitles(thirdPage), [
+		"Agent Memory 的工程边界：工作记忆、长期记忆与知识",
 		"从 Java 后端到 Agent 工程：哪些能力可以直接迁移",
 	]);
 	assert.match(firstPage, /href="\/posts\/page\/2\/"/);
@@ -259,6 +261,43 @@ test("the Agent contribution article uses the validated 16:9 main image", async 
 	assert.equal(metadata.height, 1152);
 });
 
+test("the browser, Skills, and Files article uses one validated main image", async () => {
+	const imagePath = join(
+		root,
+		"public",
+		"images",
+		"posts",
+		"agent-browser-skills-files-production-loop.webp",
+	);
+	assert.ok(existsSync(imagePath), "missing browser, Skills, and Files artwork");
+	const metadata = await sharp(imagePath).metadata();
+	assert.equal(metadata.format, "webp");
+	assert.equal(metadata.width, 2048);
+	assert.equal(metadata.height, 1152);
+
+	const html = readFileSync(
+		join(
+			dist,
+			"posts",
+			"agent-browser-skills-files-production-loop",
+			"index.html",
+		),
+		"utf8",
+	);
+	const matchingImages = parse(html)
+		.querySelectorAll("img")
+		.filter(
+			(image) =>
+				image.getAttribute("src") ===
+				"/images/posts/agent-browser-skills-files-production-loop.webp",
+		);
+	assert.equal(matchingImages.length, 1);
+	assert.equal(
+		matchingImages[0].getAttribute("alt"),
+		"输入文件、按需加载 Skill、浏览器与电脑操作经过应用侧 Agent Loop 和人工确认后生成可追踪输出的执行闭环图",
+	);
+});
+
 test("the generated home page exposes the reference-theme controls", () => {
 	const html = readFileSync(join(dist, "index.html"), "utf8");
 	for (const signal of [
@@ -277,12 +316,12 @@ test("the generated home page exposes the reference-theme controls", () => {
 		.map((element) => element.text.trim())
 		.filter(Boolean);
 	assert.deepEqual(homeTitles.slice(0, 6), [
+		"Agent 生产化的最小闭环：浏览器、Skill 与文件如何接起来",
 		"Agent 贡献不该只靠一份说明书：把规则变成合并门禁",
 		"一次 DeerFlow 开源贡献：锁住字典之后，任务为什么还是串了",
 		"Agent 不该把审批全交给人：Claude Code 的 Auto mode",
 		"Agent 失败，可能只是环境没把话说清楚",
 		"Agent 越界不是一句提示词能拦住的",
-		"当模型不再需要手把手：Claude 5 与无状态 MCP 带来的 Agent 工程变化",
 	]);
 });
 
@@ -290,6 +329,10 @@ test("the home page avoids blocking fonts and eager hidden background images", a
 	const html = readFileSync(join(dist, "index.html"), "utf8");
 	const bannerSource = readFileSync(
 		join(root, "src", "components", "layout", "Banner.astro"),
+		"utf8",
+	);
+	const postCardSource = readFileSync(
+		join(root, "src", "components", "features", "posts", "PostCard.astro"),
 		"utf8",
 	);
 	const carouselHtml = html.match(
@@ -345,6 +388,11 @@ test("the home page avoids blocking fonts and eager hidden background images", a
 		/nextImage\.addEventListener\('error', cancelCrossfade, \{ once: true \}\)/,
 	);
 	assert.match(bannerSource, /transform-origin:\s*center top/);
+	assert.match(
+		postCardSource,
+		/fetchpriority="low"/,
+		"post-card covers must not compete with the visible banner and app shell",
+	);
 
 	const banners = [
 		"fanren-mulan-character-01.webp",
@@ -409,6 +457,10 @@ test("the music player exposes only the selected Fanren tracks", () => {
 		),
 		"utf8",
 	);
+	const mainGridLayout = readFileSync(
+		join(root, "src", "layouts", "MainGridLayout.astro"),
+		"utf8",
+	);
 	const store = readFileSync(
 		join(root, "src", "stores", "musicPlayerStore.ts"),
 		"utf8",
@@ -448,6 +500,11 @@ test("the music player exposes only the selected Fanren tracks", () => {
 	assert.match(playlist, /DEFAULT_SONG:\s*Song\s*=\s*LOCAL_PLAYLIST\[0\]/);
 	assert.match(floatingControls, /MusicFabButton client:only="svelte"/);
 	assert.match(floatingControls, /data-control-key="music"/);
+	assert.match(
+		mainGridLayout,
+		/MusicPlayer client:idle=\{\{ timeout: 4000 \}\}/,
+		"the full music player must hydrate after critical page resources",
+	);
 	assert.match(player, /music-player-fab-anchor/);
 	assert.match(store, /this\.audio\.preload\s*=\s*"none"/);
 	assert.match(store, /if \(autoPlay\) \{\s*this\.audio\.load\(\);/);

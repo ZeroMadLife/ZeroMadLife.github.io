@@ -164,6 +164,7 @@ const homeContent = getPostHomeContent(
 					basePath={getFileDirFromPath(entry.filePath || "")}
 					alt="Cover Image of the Post"
 					class="w-full h-full"
+					fetchpriority="low"
 					widths={[200, 400, 800]}
 					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>

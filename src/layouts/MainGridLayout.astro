@@ -267,7 +267,9 @@ const defaultPostListLayout = siteConfig.postListLayout?.defaultMode || "list";
 
 			<FloatingControls headings={headings} />
 			{
-				musicPlayerConfig.enable && <MusicPlayer client:only="svelte" />
+				musicPlayerConfig.enable && (
+					<MusicPlayer client:idle={{ timeout: 4000 }} />
+				)
 			}
 		</div>
 	</div>
